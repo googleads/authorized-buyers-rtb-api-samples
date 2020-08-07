@@ -1,0 +1,19 @@
+{
+  "description": "Authorized Buyers Real-Time Bidding API PHP Samples",
+  "require": {
+    "php": ">=7.2",
+    "google/apiclient": "^2.0"
+  },
+  "require-dev": {
+    "squizlabs/php_codesniffer": "3.*"
+  },
+  "type": "project",
+  "homepage": "https://github.com/googleads/authorized-buyers-rtb-api-samples/tree/master/php",
+  "license": "Apache-2.0",
+  "authors": [
+    {
+      "name": "Google",
+      "homepage": "https://github.com/googleads/authorized-buyers-rtb-api-samples/graphs/contributors"
+    }
+  ]
+}
