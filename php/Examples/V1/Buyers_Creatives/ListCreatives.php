@@ -57,7 +57,7 @@ class ListCreatives extends BaseExample
                     'this sample is to filter such that only approved HTML snippet creatives ' .
                     'are returned.',
                 'default' =>
-                    'creativeServingDecision.openAuctionServingStatus.status=APPROVED ' .
+                    'creativeServingDecision.networkPolicyCompliance.status=APPROVED ' .
                     'AND creativeFormat=HTML'
             ],
             [

@@ -90,7 +90,7 @@ public class ListCreatives {
         .help("Query string to filter creatives. If no filter is specified, all active creatives " +
             "will be returned. To demonstrate usage, the default behavior of this sample is to " +
             "filter such that only approved HTML snippet creatives are returned.")
-        .setDefault("creativeServingDecision.openAuctionServingStatus.status=APPROVED " +
+        .setDefault("creativeServingDecision.networkPolicyCompliance.status=APPROVED " +
             "AND creativeFormat=HTML");
     parser.addArgument("-v", "--view")
         .help("Controls the amount of information included in the response. By default, the " +

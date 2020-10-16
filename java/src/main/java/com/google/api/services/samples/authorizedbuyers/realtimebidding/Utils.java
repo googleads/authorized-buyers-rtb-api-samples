@@ -188,14 +188,16 @@ public class Utils {
     CreativeServingDecision servingDecision = creative.getCreativeServingDecision();
     if (servingDecision != null) {
       System.out.println("\t- Creative serving decision");
-      System.out.printf("\t\t- Deals serving status: %s\n",
-          servingDecision.getDealsServingStatus().getStatus());
-      System.out.printf("\t\t- Open auction serving status: %s\n",
-          servingDecision.getOpenAuctionServingStatus().getStatus());
-      System.out.printf("\t\t- China serving status: %s\n",
-          servingDecision.getChinaServingStatus().getStatus());
-      System.out.printf("\t\t- Russia serving status: %s\n",
-          servingDecision.getRussiaServingStatus().getStatus());
+      System.out.printf("\t\t- Deals policy compliance status: %s\n",
+          servingDecision.getDealsPolicyCompliance().getStatus());
+      System.out.printf("\t\t- Network policy compliance status: %s\n",
+          servingDecision.getNetworkPolicyCompliance().getStatus());
+      System.out.printf("\t\t- Platform policy compliance status: %s\n",
+          servingDecision.getPlatformPolicyCompliance().getStatus());
+      System.out.printf("\t\t- China policy compliance status: %s\n",
+          servingDecision.getChinaPolicyCompliance().getStatus());
+      System.out.printf("\t\t- Russia policy compliance status: %s\n",
+          servingDecision.getRussiaPolicyCompliance().getStatus());
     }
 
     List<String> declaredClickThroughUrls = creative.getDeclaredClickThroughUrls();

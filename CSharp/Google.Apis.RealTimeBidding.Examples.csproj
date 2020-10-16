@@ -1,0 +1,52 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <!-- build properties -->
+  <PropertyGroup>
+    <TargetFrameworks>netcoreapp3.0;</TargetFrameworks>
+    <OutputType>Exe</OutputType>
+    <AssemblyName>Google.Apis.RealTimeBidding.Examples</AssemblyName>
+    <RootNamespace>Google.Apis.RealTimeBidding.Examples</RootNamespace>
+    <DebugType>pdbonly</DebugType>
+    <IncludeSymbols>true</IncludeSymbols>
+    <IncludeSource>true</IncludeSource>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <AssemblyVersion>4.0.0.0</AssemblyVersion>
+    <FileVersion>4.0.0.0</FileVersion>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>Google.Apis.RealTimeBidding.Examples.Program</StartupObject>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Google.Apis" Version="1.49.0" />
+    <PackageReference Include="Google.Apis.Auth" Version="1.49.0" />
+    <PackageReference Include="Google.Apis.Core" Version="1.49.0" />
+    <PackageReference Include="Google.Apis.Oauth2.v2" Version="1.48.0.1869" />
+    <PackageReference Include="Google.Apis.PubSub.v1" Version="1.49.0.2045" />
+    <PackageReference Include="Google.Apis.RealTimeBidding.v1" Version="1.49.0.2107" />
+    <PackageReference Include="log4net" Version="2.0.9" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="3.1.4" />
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Mono.Options" Version="6.6.0.161" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="4.7.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="ErrorMessages.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ErrorMessages.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Update="ErrorMessages.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ErrorMessages.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+</Project>
