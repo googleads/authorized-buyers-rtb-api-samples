@@ -99,10 +99,11 @@ def print_creative(creative)
   serving_decision = creative.creative_serving_decision
 
   puts "\t- Creative Serving Decision"
-  puts "\t\tDeals Serving Status: #{serving_decision.deals_serving_status.status}"
-  puts "\t\tOpen Auction Serving Status: #{serving_decision.open_auction_serving_status.status}"
-  puts "\t\tChina Serving Status: #{serving_decision.china_serving_status.status}"
-  puts "\t\tRussia Serving Status: #{serving_decision.russia_serving_status.status}"
+  puts "\t\tDeals Policy Compliance Status: #{serving_decision.deals_policy_compliance.status}"
+  puts "\t\tNetwork Policy Compliance Status: #{serving_decision.network_policy_compliance.status}"
+  puts "\t\tPlatform Policy Compliance Status: #{serving_decision.platform_policy_compliance.status}"
+  puts "\t\tChina Policy Compliance Status: #{serving_decision.china_policy_compliance.status}"
+  puts "\t\tRussia Policy Compliance Status: #{serving_decision.russia_policy_compliance.status}"
 
   unless creative.declared_click_through_urls.nil?
     puts "\t- Declared Click-Through URLs:"

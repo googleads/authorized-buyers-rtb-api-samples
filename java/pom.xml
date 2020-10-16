@@ -124,7 +124,7 @@
     <dependency>
       <groupId>com.google.apis</groupId>
       <artifactId>google-api-services-realtimebidding</artifactId>
-      <version>v1-rev20200623-1.30.10</version>
+      <version>v1-rev20201008-1.30.10</version>
     </dependency>
     <dependency>
       <groupId>com.google.auth</groupId>

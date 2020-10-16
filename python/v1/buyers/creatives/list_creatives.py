@@ -69,7 +69,7 @@ if __name__ == '__main__':
     sys.exit(1)
 
   default_list_filter = (
-      'creativeServingDecision.openAuctionServingStatus.status=APPROVED '
+      'creativeServingDecision.networkPolicyCompliance.status=APPROVED '
       'AND creativeFormat=HTML')
 
   parser = argparse.ArgumentParser(

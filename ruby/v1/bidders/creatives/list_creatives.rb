@@ -63,7 +63,7 @@ if __FILE__ == $0
     raise 'Unable to create service, was the KEY_FILE in util.rb set? Error message: #{e.message}'
   end
 
-  default_list_filter = 'creativeServingDecision.openAuctionServingStatus'\
+  default_list_filter = 'creativeServingDecision.networkPolicyCompliance'\
                         '.status=APPROVED AND creativeFormat=HTML'
 
   # Set options and default values for fields used in this example.
