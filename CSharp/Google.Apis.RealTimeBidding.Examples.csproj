@@ -16,6 +16,8 @@
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject>Google.Apis.RealTimeBidding.Examples.Program</StartupObject>
+    <!-- Run FirstApiRequest by uncommenting the next line and commenting the previous line.-->
+    <!--<StartupObject>Google.Apis.RealTimeBidding.Examples.v1.FirstApiRequest</StartupObject>-->
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Google.Apis" Version="1.49.0" />
