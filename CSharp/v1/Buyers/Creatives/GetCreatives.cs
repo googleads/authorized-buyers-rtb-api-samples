@@ -42,13 +42,14 @@ namespace Google.Apis.RealTimeBidding.Examples.v1.Buyers.Creatives
         /// </summary>
         public override string Description
         {
-            get { return "This code example gets a specific creative for a buyer account."; }
+            get => "This code example gets a specific creative for a buyer account.";
         }
 
         /// <summary>
         /// Parse specified arguments.
         /// </summary>
         protected override Dictionary<string, object> ParseArguments(List<string> exampleArgs) {
+            string[] requiredOptions = new string[] {"account_id", "creative_id"};
             bool showHelp = false;
 
             string accountId = null;
@@ -81,7 +82,7 @@ namespace Google.Apis.RealTimeBidding.Examples.v1.Buyers.Creatives
                     ("Controls the amount of information included in the response. By default, " +
                      "the creatives.get method only includes creativeServingDecision. This " +
                      "sample configures the view to return the full contents of the creative " +
-                     "by setting this to \"FULL\"."),
+                     @"by setting this to ""FULL""."),
                     v => view = v
                 },
             };
@@ -95,40 +96,12 @@ namespace Google.Apis.RealTimeBidding.Examples.v1.Buyers.Creatives
                 options.WriteOptionDescriptions(Console.Out);
                 Environment.Exit(0);
             }
-            // Handle error conditions.
-            if(extras.Count > 0)
-            {
-                Console.Error.WriteLine("Unknown arguments specified:");
-                foreach(string arg in extras)
-                {
-                    Console.Error.WriteLine(arg);
-                }
-                Environment.Exit(1);
-            }
-            // Verify required arguments were set.
-            if(accountId == null)
-            {
-                Console.Error.WriteLine("Required argument \"account_id\" not specified.");
-                options.WriteOptionDescriptions(Console.Error);
-                Environment.Exit(1);
-            }
-            else
-            {
-                parsedArgs["accountId"] = accountId;
-            }
-
-            if(creativeId == null)
-            {
-                Console.Error.WriteLine("Required argument \"creative_id\" not specified.");
-                options.WriteOptionDescriptions(Console.Error);
-                Environment.Exit(1);
-            }
-            else
-            {
-                parsedArgs["creative"] = creativeId;
-            }
             // Set optional arguments.
+            parsedArgs["account_id"] = accountId;
+            parsedArgs["creative_id"] = creativeId;
             parsedArgs["view"] = view ?? "FULL";
+            // Validate that options were set correctly.
+            Utilities.ValidateOptions(options, parsedArgs, requiredOptions, extras);
 
             return parsedArgs;
         }
@@ -139,8 +112,8 @@ namespace Google.Apis.RealTimeBidding.Examples.v1.Buyers.Creatives
         /// <param name="parsedArgs">Parsed arguments for the example.</param>
         protected override void Run(Dictionary<string, object> parsedArgs)
         {
-            string accountId = (string) parsedArgs["accountId"];
-            string creativeId = (string) parsedArgs["creativeId"];
+            string accountId = (string) parsedArgs["account_id"];
+            string creativeId = (string) parsedArgs["creative_id"];
             string name = $"buyers/{accountId}/creatives/{creativeId}";
 
             BuyersResource.CreativesResource.GetRequest request =
@@ -159,9 +132,8 @@ namespace Google.Apis.RealTimeBidding.Examples.v1.Buyers.Creatives
             }
             catch (System.Exception exception)
             {
-                Console.Error.WriteLine("Real-time Bidding API returned error response:\n{0}",
-                                        exception.Message);
-                Environment.Exit(1);
+                throw new ApplicationException(
+                    $"Real-time Bidding API returned error response:\n{exception.Message}");
             }
 
             Utilities.PrintCreative(response);

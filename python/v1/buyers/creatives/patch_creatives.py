@@ -78,8 +78,8 @@ if __name__ == '__main__':
   parser.add_argument(
       '-a', '--account_id', default=DEFAULT_BUYER_RESOURCE_ID,
       help=('The resource ID of the buyers resource under which the '
-            'userlist was created. This will be used to construct the '
-            'name used as a path parameter for the userlists.patch request.'))
+            'creative was created. This will be used to construct the '
+            'name used as a path parameter for the creatives.patch request.'))
   parser.add_argument(
       '-c', '--creative_id', default=DEFAULT_CREATIVE_RESOURCE_ID,
       help='The resource ID of the buyers.creatives resource for which the '

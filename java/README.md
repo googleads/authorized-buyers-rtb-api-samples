@@ -96,6 +96,6 @@ mvn exec:java -Dexec.mainClass=<CLASSPATH_TO_EXAMPLE>
 For example, running the bidders ListCreatives example would look like:
 
 ```bash
-mvn exec:java -Dexec.mainClass=com.google.api.services.samples.authorizedbuyers.realtimebidding.v1.bidders.ListCreatives
+mvn exec:java -Dexec.mainClass=com.google.api.services.samples.authorizedbuyers.realtimebidding.v1.bidders.creatives.ListCreatives
 -Dexec.args="--account_id <INSERT_ACCOUNT_ID>>"
 ```

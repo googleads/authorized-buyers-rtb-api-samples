@@ -19,6 +19,7 @@ using Google.Apis.RealTimeBidding.v1.Data;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Http;
 using Google.Apis.Json;
+using Mono.Options;
 
 using System;
 using System.Collections.Generic;
@@ -83,43 +84,31 @@ namespace Google.Apis.RealTimeBidding.Examples
             }
 
             IList<string> declaredClickThroughUrls = creative.DeclaredClickThroughUrls;
-            if(declaredClickThroughUrls != null && declaredClickThroughUrls.Count > 0)
+            if(declaredClickThroughUrls != null)
             {
-                Console.WriteLine("\t- Declared click-through URLs:");
-                foreach(string declaredClickUrl in declaredClickThroughUrls)
-                {
-                    Console.WriteLine("\t\t{0}", declaredClickUrl);
-                }
+                Console.WriteLine("\t- Declared click-through URLs:\n\t\t" +
+                    String.Join("\n\t\t", declaredClickThroughUrls));
             }
 
             IList<string> declaredAttributes = creative.DeclaredAttributes;
-            if(declaredAttributes != null && declaredAttributes.Count > 0)
+            if(declaredAttributes != null)
             {
-                Console.WriteLine("\t- Declared attributes:");
-                foreach(string declaredAttribute in declaredAttributes)
-                {
-                    Console.WriteLine("\t\t{0}", declaredAttribute);
-                }
+                Console.WriteLine("\t- Declared attributes:\n\t\t" +
+                    String.Join("\n\t\t", declaredAttributes));
             }
 
             IList<int?> declaredVendorIds = creative.DeclaredVendorIds;
-            if(declaredVendorIds != null && declaredVendorIds.Count > 0)
+            if(declaredVendorIds != null)
             {
-                Console.WriteLine("\t- Declared vendor IDs:");
-                foreach(int? declaredVendorId in declaredVendorIds)
-                {
-                    Console.WriteLine("\t\t{0}", declaredVendorId.ToString());
-                }
+                Console.WriteLine("\t- Declared vendor IDs:\n\t\t" +
+                    String.Join("\n\t\t", declaredVendorIds));
             }
 
             IList<string> declaredRestrictedCategories = creative.DeclaredRestrictedCategories;
-            if(declaredRestrictedCategories != null && declaredRestrictedCategories.Count > 0)
+            if(declaredRestrictedCategories != null)
             {
-                Console.WriteLine("\t- Declared restricted categories:");
-                foreach(string declaredRestrictedCategory in declaredRestrictedCategories)
-                {
-                    Console.WriteLine("\t\t{0}", declaredRestrictedCategory);
-                }
+                Console.WriteLine("\t- Declared restricted categories:\n\t\t" +
+                    String.Join("\n\t\t", declaredRestrictedCategories));
             }
 
             HtmlContent html = creative.Html;
@@ -192,6 +181,218 @@ namespace Google.Apis.RealTimeBidding.Examples
         }
 
         /// <summary>
+        /// Print a human-readable representation of a single pretargeting configuration.
+        /// </summary>
+        public static void PrintPretargetingConfiguration(PretargetingConfig configuration)
+        {
+            Console.WriteLine("* Pretargeting configuration name: {0}", configuration.Name);
+            Console.WriteLine("\t- Display name: {0}", configuration.DisplayName);
+            Console.WriteLine("\t- Billing ID: {0}", configuration.BillingId);
+            Console.WriteLine("\t- State: {0}", configuration.State);
+
+            long? maximumQps = configuration.MaximumQps;
+            if(maximumQps != null)
+            {
+                Console.WriteLine("\t- Maximum QPS: {0}", maximumQps);
+            }
+
+            string interstitialTargeting = configuration.InterstitialTargeting;
+            if(interstitialTargeting != null)
+            {
+                Console.WriteLine("\t- Interstitial targeting: {0}", interstitialTargeting);
+            }
+
+            int? minimumViewabilityDecile = configuration.MinimumViewabilityDecile;
+            if(minimumViewabilityDecile != null)
+            {
+                Console.WriteLine("\t- Minimum viewability decile: {0}", minimumViewabilityDecile);
+            }
+
+            IList<string> includedFormats = configuration.IncludedFormats;
+            if(includedFormats != null)
+            {
+                Console.WriteLine("\t- Included formats:\n\t\t" +
+                    String.Join("\n\t\t", includedFormats));
+            }
+
+            NumericTargetingDimension geoTargeting = configuration.GeoTargeting;
+            if(geoTargeting != null)
+            {
+                IList<long?> includedIds = geoTargeting.IncludedIds;
+                if(includedIds != null)
+                {
+                    Console.WriteLine("\t- Included geo IDs:\n\t\t" +
+                        String.Join("\n\t\t", includedIds));
+                }
+
+                IList<long?> excludedIds = geoTargeting.ExcludedIds;
+                if(excludedIds != null)
+                {
+                    Console.WriteLine("\t- Excluded geo IDs:\n\t\t" +
+                        String.Join("\n\t\t", excludedIds));
+                }
+            }
+
+            IList<long?> invalidGeoIDs = configuration.InvalidGeoIds;
+            if(invalidGeoIDs != null)
+            {
+                Console.WriteLine("\t- Invalid Geo IDs:\n\t\t" +
+                    String.Join("\n\t\t", invalidGeoIDs));
+            }
+
+            NumericTargetingDimension userListTargeting = configuration.UserListTargeting;
+            if(userListTargeting != null)
+            {
+                IList<long?> includedIds = userListTargeting.IncludedIds;
+                if(includedIds != null)
+                {
+                    Console.WriteLine("\t- Included user list IDs:\n\t\t" +
+                        String.Join("\n\t\t", includedIds));
+                }
+
+                IList<long?> excludedIds = userListTargeting.ExcludedIds;
+                if(excludedIds != null)
+                {
+                    Console.WriteLine("\t- Excluded user list IDs:\n\t\t" +
+                        String.Join("\n\t\t", excludedIds));
+                }
+            }
+
+            IList<string> allowedUserTargetingModes = configuration.AllowedUserTargetingModes;
+            if(allowedUserTargetingModes != null)
+            {
+                Console.WriteLine("\t- Allowed user targeting modes:\n\t\t" +
+                    String.Join("\n\t\t", allowedUserTargetingModes));
+            }
+
+            IList<long?> excludedContentLabelIds = configuration.ExcludedContentLabelIds;
+            if(excludedContentLabelIds != null)
+            {
+                Console.WriteLine("\t- Excluded content label IDs:\n\t\t" +
+                    String.Join("\n\t\t", excludedContentLabelIds));
+            }
+
+            IList<string> includedUserIdTypes = configuration.IncludedUserIdTypes;
+            if(includedUserIdTypes != null)
+            {
+                Console.WriteLine("\t- Included user ID types:\n\t\t" +
+                    String.Join("\n\t\t", includedUserIdTypes));
+            }
+
+            IList<string> includedLanguages = configuration.IncludedLanguages;
+            if(includedLanguages != null)
+            {
+                Console.WriteLine("\t- Included laguages:\n\t\t" +
+                    String.Join("\n\t\t", includedLanguages));
+            }
+
+            IList<long?> includedMobileOsIds = configuration.IncludedMobileOperatingSystemIds;
+            if(includedMobileOsIds != null)
+            {
+                Console.WriteLine("\t- Included mobile operating system IDs:\n\t\t" +
+                    String.Join("\n\t\t", includedMobileOsIds));
+            }
+
+            NumericTargetingDimension verticalTargeting = configuration.VerticalTargeting;
+            if(verticalTargeting != null)
+            {
+                IList<long?> includedIds = verticalTargeting.IncludedIds;
+                if(includedIds != null)
+                {
+                    Console.WriteLine("\t- Included vertical IDs:\n\t\t" +
+                        String.Join("\n\t\t", includedIds));
+                }
+
+                IList<long?> excludedIds = verticalTargeting.ExcludedIds;
+                if(excludedIds != null)
+                {
+                    Console.WriteLine("\t- Excluded vertical IDs:\n\t\t" +
+                        String.Join("\n\t\t", excludedIds));
+                }
+            }
+
+            IList<string> includedPlatforms = configuration.IncludedPlatforms;
+            if(includedPlatforms != null)
+            {
+                Console.WriteLine("\t- Included platforms:\n\t\t" +
+                    String.Join("\n\t\t", includedPlatforms));
+            }
+
+            IList<CreativeDimensions> creativeDimensions =
+                configuration.IncludedCreativeDimensions;
+            if(creativeDimensions != null && creativeDimensions.Count > 0)
+            {
+                Console.WriteLine("\t- Included creative dimensions:");
+                foreach(CreativeDimensions creativeDimension in creativeDimensions)
+                {
+                    Console.WriteLine("\t\tHeight: {0}; Width: {1}",
+                        creativeDimension.Height, creativeDimension.Width);
+                }
+            }
+
+            IList<string> includedEnvironments = configuration.IncludedEnvironments;
+            if(includedEnvironments != null)
+            {
+                Console.WriteLine("\t- Included environments:\n\t\t" +
+                    String.Join("\n\t\t", includedEnvironments));
+            }
+
+            StringTargetingDimension webTargeting = configuration.WebTargeting;
+            if(webTargeting != null)
+            {
+                Console.WriteLine("\t- Web targeting:");
+                Console.WriteLine("\t\t- Targeting mode: {0}", webTargeting.TargetingMode);
+                Console.WriteLine("\t\t- Site URLs:\n\t\t\t" +
+                    String.Join("\n\t\t\t", webTargeting.Values));
+            }
+
+            AppTargeting appTargeting = configuration.AppTargeting;
+            if(appTargeting != null)
+            {
+                Console.WriteLine("\t- App targeting:");
+
+                StringTargetingDimension mobileAppTargeting = appTargeting.MobileAppTargeting;
+                if(mobileAppTargeting != null)
+                {
+                    Console.WriteLine("\t\t- Mobile app targeting:");
+                    Console.WriteLine("\t\t\t- Targeting mode: {0}",
+                        mobileAppTargeting.TargetingMode);
+                    Console.WriteLine("\t\t\t- Mobile app IDs:\n\t\t\t\t" +
+                        String.Join("\n\t\t\t\t", mobileAppTargeting.Values));
+                }
+
+                NumericTargetingDimension mobileAppCategoryTargeting =
+                    appTargeting.MobileAppCategoryTargeting;
+                if(mobileAppCategoryTargeting != null)
+                {
+                    Console.WriteLine("\t\t- Mobile app category targeting:");
+                    IList<long?> includedIds = mobileAppCategoryTargeting.IncludedIds;
+                    if(includedIds != null)
+                    {
+                        Console.WriteLine("\t\t\t- Included mobile app category targeting IDs:" +
+                            "\n\t\t\t\t" + String.Join("\n\t\t\t\t", includedIds));
+                    }
+
+                    IList<long?> excludedIds = mobileAppCategoryTargeting.ExcludedIds;
+                    if(excludedIds != null)
+                    {
+                        Console.WriteLine("\t\t\t- Excluded mobile app category targeting IDs:" +
+                            "\n\t\t\t\t" + String.Join("\n\t\t\t\t", excludedIds));
+                    }
+                }
+            }
+
+            StringTargetingDimension publisherTargeting = configuration.PublisherTargeting;
+            if(publisherTargeting != null)
+            {
+                Console.WriteLine("\t- Publisher targeting:");
+                Console.WriteLine("\t\t- Targeting mode: {0}", publisherTargeting.TargetingMode);
+                Console.WriteLine("\t\t- Publisher IDs:\n\t\t\t" +
+                    String.Join("\n\t\t\t", publisherTargeting.Values));
+            }
+        }
+
+        /// <summary>
         /// Create a new service for the Google Cloud Pub/Sub API.
         /// </summary>
         /// <returns>A new API Service</returns>
@@ -240,6 +441,32 @@ namespace Google.Apis.RealTimeBidding.Examples
                         RealTimeBiddingService.Scope.RealtimeBidding
                     }
                 }.FromPrivateKey(credentialParameters.PrivateKey));
+        }
+
+        /// <summary>
+        /// Ensures that required options have been set, and that unknown options have not been
+        /// specified. Otherwise exits the example with an error message.
+        /// </summary>
+        /// <returns>A new API Service</returns>
+        public static void ValidateOptions(
+            OptionSet options, Dictionary<string, object> parsedArgs, string[] requiredKeys,
+            List<string> extras)
+        {
+            if(extras.Count > 0)
+            {
+                throw new ApplicationException("Unknown arguments specified:\n\t" +
+                    String.Join("\t", extras));
+            }
+
+            foreach(string requiredKey in requiredKeys)
+            {
+                if(parsedArgs[requiredKey] == null)
+                {
+                    options.WriteOptionDescriptions(Console.Error);
+                    throw new ApplicationException(String.Format(
+                        @"Required argument ""{0}"" not specified.", requiredKey));
+                }
+            }
         }
     }
 }

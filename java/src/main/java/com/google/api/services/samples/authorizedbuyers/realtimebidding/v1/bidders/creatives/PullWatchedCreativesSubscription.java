@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.api.services.samples.authorizedbuyers.realtimebidding.v1.bidders;
+package com.google.api.services.samples.authorizedbuyers.realtimebidding.v1.bidders.creatives;
 
 import static net.sourceforge.argparse4j.impl.Arguments.storeTrue;
 

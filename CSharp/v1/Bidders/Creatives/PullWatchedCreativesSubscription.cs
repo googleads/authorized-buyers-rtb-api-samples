@@ -52,14 +52,15 @@ namespace Google.Apis.RealTimeBidding.Examples.v1.Bidders.Creatives
         /// </summary>
         public override string Description
         {
-            get { return ("This code example pulls creative status changes (if any) from a " +
-                          "specified Google Cloud Pub/Sub subscription."); }
+            get => "This code example pulls creative status changes (if any) from a specified " +
+                   "Google Cloud Pub/Sub subscription.";
         }
 
         /// <summary>
         /// Parse specified arguments.
         /// </summary>
         protected override Dictionary<string, object> ParseArguments(List<string> exampleArgs) {
+            string[] requiredOptions = new string[] {"subscription_name"};
             bool showHelp = false;
 
             string subscriptionName = null;
@@ -79,7 +80,7 @@ namespace Google.Apis.RealTimeBidding.Examples.v1.Bidders.Creatives
                     ("[Required] The Google Cloud Pub/Sub subscription to be pulled. This value " +
                      "would be returned in the response from the bidders.creatives.watch " +
                      "method, and should be provided as-is in the form: " +
-                     "\"projects/realtimebidding-pubsub/subscriptions/{subscription_id}\""),
+                     @"""projects/realtimebidding-pubsub/subscriptions/{subscription_id}"""),
                     s => subscriptionName = s
                 },
                 {
@@ -106,30 +107,12 @@ namespace Google.Apis.RealTimeBidding.Examples.v1.Bidders.Creatives
                 options.WriteOptionDescriptions(Console.Out);
                 Environment.Exit(0);
             }
-            // Handle error conditions.
-            if(extras.Count > 0)
-            {
-                Console.Error.WriteLine("Unknown arguments specified:");
-                foreach(string arg in extras)
-                {
-                    Console.Error.WriteLine(arg);
-                }
-                Environment.Exit(1);
-            }
-            // Verify required arguments were set.
-            if(subscriptionName == null)
-            {
-                Console.Error.WriteLine("Required argument \"subscription_name\" not specified.");
-                options.WriteOptionDescriptions(Console.Error);
-                Environment.Exit(1);
-            }
-            else
-            {
-                parsedArgs["subscription_name"] = subscriptionName;
-            }
-            // Set optional arguments.
+            // Set arguments.
+            parsedArgs["subscription_name"] = subscriptionName;
             parsedArgs["max_messages"] = maxMessages ?? Utilities.MAX_PAGE_SIZE;
             parsedArgs["acknowledge"] = acknowledge ?? false;
+            // Validate that options were set correctly.
+            Utilities.ValidateOptions(options, parsedArgs, requiredOptions, extras);
 
             return parsedArgs;
         }
@@ -142,7 +125,7 @@ namespace Google.Apis.RealTimeBidding.Examples.v1.Bidders.Creatives
         {
             string subscriptionName = (string) parsedArgs["subscription_name"];
 
-            Console.WriteLine("Retrieving messages from subscription: \"{0}\"", subscriptionName);
+            Console.WriteLine(@"Retrieving messages from subscription: ""{0}""", subscriptionName);
 
             PullRequest pullRequest = new PullRequest();
             pullRequest.MaxMessages = (int?) parsedArgs["max_messages"];
@@ -156,9 +139,8 @@ namespace Google.Apis.RealTimeBidding.Examples.v1.Bidders.Creatives
             }
             catch (System.Exception exception)
             {
-                Console.Error.WriteLine("Google Cloud Pub/Sub API returned error response:\n{0}",
-                                        exception.Message);
-                Environment.Exit(1);
+                throw new ApplicationException(
+                    $"Google Cloud Pub/Sub API returned error response:\n{exception.Message}");
             }
 
             var ackIds = new List<string>();
@@ -181,8 +163,8 @@ namespace Google.Apis.RealTimeBidding.Examples.v1.Bidders.Creatives
                 var accountId = messageAttributes["accountId"];
                 var creativeId = messageAttributes["creativeId"];
 
-                Console.Out.WriteLine("* Creative found for buyer account ID \"{0}\" with " +
-                                      "creative ID \"{1}\" has been updated with the following " +
+                Console.Out.WriteLine(@"* Creative found for buyer account ID ""{0}"" with " +
+                                      @"creative ID ""{1}"" has been updated with the following " +
                                       "creative status:\n", accountId, creativeId);
 
                 byte[] data = Convert.FromBase64String(message.Data);
@@ -208,10 +190,9 @@ namespace Google.Apis.RealTimeBidding.Examples.v1.Bidders.Creatives
                     }
                     catch (System.Exception exception)
                     {
-                        Console.Error.WriteLine(
-                            "Google Cloud Pub/Sub API returned error response:\n{0}",
-                            exception.Message);
-                        Environment.Exit(1);
+                        throw new ApplicationException(
+                            "Google Cloud Pub/Sub API returned error response:\n" +
+                            $"{exception.Message}");
                     }
                 }
             }

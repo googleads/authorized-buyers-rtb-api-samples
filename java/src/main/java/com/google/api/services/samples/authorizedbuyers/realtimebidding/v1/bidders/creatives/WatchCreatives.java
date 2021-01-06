@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.api.services.samples.authorizedbuyers.realtimebidding.v1.bidders;
+package com.google.api.services.samples.authorizedbuyers.realtimebidding.v1.bidders.creatives;
 
 import com.google.api.services.realtimebidding.v1.RealTimeBidding;
 import com.google.api.services.realtimebidding.v1.model.WatchCreativesRequest;
