@@ -128,6 +128,21 @@ class Config
                    'WatchCreatives',
                    'PullWatchedCreativesSubscription'
                ],
+               'Bidders_PretargetingConfigs' => [
+                   'GetPretargetingConfigs',
+                   'ListPretargetingConfigs',
+                   'CreatePretargetingConfigs',
+                   'PatchPretargetingConfigs',
+                   'AddTargetedApps',
+                   'AddTargetedPublishers',
+                   'AddTargetedSites',
+                   'RemoveTargetedApps',
+                   'RemoveTargetedPublishers',
+                   'RemoveTargetedSites',
+                   'ActivatePretargetingConfigs',
+                   'SuspendPretargetingConfigs',
+                   'DeletePretargetingConfigs'
+               ],
                'Buyers_Creatives' => [
                    'GetCreatives',
                    'ListCreatives',

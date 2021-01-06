@@ -114,7 +114,7 @@
     <dependency>
       <groupId>com.google.api-client</groupId>
       <artifactId>google-api-client</artifactId>
-      <version>1.30.10</version>
+      <version>1.31.1</version>
     </dependency>
     <dependency>
       <groupId>com.google.apis</groupId>
@@ -124,12 +124,12 @@
     <dependency>
       <groupId>com.google.apis</groupId>
       <artifactId>google-api-services-realtimebidding</artifactId>
-      <version>v1-rev20201008-1.30.10</version>
+      <version>v1-rev20201109-1.31.0</version>
     </dependency>
     <dependency>
       <groupId>com.google.auth</groupId>
       <artifactId>google-auth-library-oauth2-http</artifactId>
-      <version>0.20.0</version>
+      <version>0.22.2</version>
     </dependency>
     <dependency>
       <groupId>com.google.code.gson</groupId>
@@ -139,7 +139,7 @@
     <dependency>
       <groupId>com.google.http-client</groupId>
       <artifactId>google-http-client-jackson2</artifactId>
-      <version>${project.http.version}</version>
+      <version>1.38.0</version>
     </dependency>
     <dependency>
       <groupId>joda-time</groupId>
@@ -153,8 +153,6 @@
     </dependency>
   </dependencies>
   <properties>
-    <project.http.version>1.32.1</project.http.version>
-    <project.oauth.version>1.30.3</project.oauth.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 </project>

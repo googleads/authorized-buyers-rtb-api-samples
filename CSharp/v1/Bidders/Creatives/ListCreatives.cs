@@ -42,13 +42,14 @@ namespace Google.Apis.RealTimeBidding.Examples.v1.Bidders.Creatives
         /// </summary>
         public override string Description
         {
-            get { return "This code example lists all creatives for a given bidder account."; }
+            get => "This code example lists all creatives for a given bidder account.";
         }
 
         /// <summary>
         /// Parse specified arguments.
         /// </summary>
         protected override Dictionary<string, object> ParseArguments(List<string> exampleArgs) {
+            string[] requiredOptions = new string[] {"account_id"};
             bool showHelp = false;
             string defaultFilter = "creativeServingDecision.networkPolicyCompliance.status=" +
                                    "APPROVED AND creativeFormat=HTML";
@@ -90,7 +91,7 @@ namespace Google.Apis.RealTimeBidding.Examples.v1.Bidders.Creatives
                     ("Controls the amount of information included in the response. By default, " +
                      "the creatives.list method only includes creativeServingDecision. This " +
                      "sample configures the view to return the full contents of the creatives " +
-                     "by setting this to \"FULL\"."),
+                     @"by setting this to ""FULL""."),
                     v => view = v
                 },
             };
@@ -104,31 +105,13 @@ namespace Google.Apis.RealTimeBidding.Examples.v1.Bidders.Creatives
                 options.WriteOptionDescriptions(Console.Out);
                 Environment.Exit(0);
             }
-            // Handle error conditions.
-            if(extras.Count > 0)
-            {
-                Console.Error.WriteLine("Unknown arguments specified:");
-                foreach(string arg in extras)
-                {
-                    Console.Error.WriteLine(arg);
-                }
-                Environment.Exit(1);
-            }
-            // Verify required arguments were set.
-            if(accountId == null)
-            {
-                Console.Error.WriteLine("Required argument \"account_id\" not specified.");
-                options.WriteOptionDescriptions(Console.Error);
-                Environment.Exit(1);
-            }
-            else
-            {
-                parsedArgs["accountId"] = accountId;
-            }
-            // Set optional arguments.
-            parsedArgs["pageSize"] = pageSize ?? Utilities.MAX_PAGE_SIZE;
+            // Set arguments.
+            parsedArgs["account_id"] = accountId;
+            parsedArgs["page_size"] = pageSize ?? Utilities.MAX_PAGE_SIZE;
             parsedArgs["filter"] = filter ?? defaultFilter;
             parsedArgs["view"] = view ?? "FULL";
+            // Validate that options were set correctly.
+            Utilities.ValidateOptions(options, parsedArgs, requiredOptions, extras);
 
             return parsedArgs;
         }
@@ -139,17 +122,17 @@ namespace Google.Apis.RealTimeBidding.Examples.v1.Bidders.Creatives
         /// <param name="parsedArgs">Parsed arguments for the example.</param>
         protected override void Run(Dictionary<string, object> parsedArgs)
         {
-            string accountId = (string) parsedArgs["accountId"];
+            string accountId = (string) parsedArgs["account_id"];
             string parent = $"bidders/{accountId}";
             string pageToken = null;
 
-            Console.WriteLine("Listing creatives for bidder account \"{0}\"", parent);
+            Console.WriteLine(@"Listing creatives for bidder account ""{0}""", parent);
             do
             {
                 BiddersResource.CreativesResource.ListRequest request =
                    rtbService.Bidders.Creatives.List(parent);
                 request.Filter = (string) parsedArgs["filter"];
-                request.PageSize = (int) parsedArgs["pageSize"];
+                request.PageSize = (int) parsedArgs["page_size"];
                 request.PageToken = pageToken;
                 request.View = (BiddersResource.CreativesResource.ListRequest.ViewEnum) Enum.Parse(
                     typeof(BiddersResource.CreativesResource.ListRequest.ViewEnum),
@@ -164,15 +147,14 @@ namespace Google.Apis.RealTimeBidding.Examples.v1.Bidders.Creatives
                 }
                 catch (System.Exception exception)
                 {
-                    Console.Error.WriteLine("Real-time Bidding API returned error response:\n{0}",
-                                            exception.Message);
-                    Environment.Exit(1);
+                    throw new ApplicationException(
+                        $"Real-time Bidding API returned error response:\n{exception.Message}");
                 }
 
                 var creatives = page.Creatives;
                 pageToken = page.NextPageToken;
 
-                if(creatives.Count == 0)
+                if(creatives == null)
                 {
                     Console.WriteLine("No creatives found for buyer account.");
                 }

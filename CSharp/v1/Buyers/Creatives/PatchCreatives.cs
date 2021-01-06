@@ -42,13 +42,14 @@ namespace Google.Apis.RealTimeBidding.Examples.v1.Buyers.Creatives
         /// </summary>
         public override string Description
         {
-            get { return "This code example patches a creative having the specified name."; }
+            get => "This code example patches a creative having the specified name.";
         }
 
         /// <summary>
         /// Parse specified arguments.
         /// </summary>
         protected override Dictionary<string, object> ParseArguments(List<string> exampleArgs) {
+            string[] requiredOptions = new string[] {"account_id", "creative_id"};
             bool showHelp = false;
 
             string accountId = null;
@@ -86,38 +87,11 @@ namespace Google.Apis.RealTimeBidding.Examples.v1.Buyers.Creatives
                 options.WriteOptionDescriptions(Console.Out);
                 Environment.Exit(0);
             }
-            // Handle error conditions.
-            if(extras.Count > 0)
-            {
-                Console.Error.WriteLine("Unknown arguments specified:");
-                foreach(string arg in extras)
-                {
-                    Console.Error.WriteLine(arg);
-                }
-                Environment.Exit(1);
-            }
-            // Verify required arguments were set.
-            if(accountId == null)
-            {
-                Console.Error.WriteLine("Required argument \"account_id\" not specified.");
-                options.WriteOptionDescriptions(Console.Error);
-                Environment.Exit(1);
-            }
-            else
-            {
-                parsedArgs["accountId"] = accountId;
-            }
-
-            if(creativeId == null)
-            {
-                Console.Error.WriteLine("Required argument \"creative_id\" not specified.");
-                options.WriteOptionDescriptions(Console.Error);
-                Environment.Exit(1);
-            }
-            else
-            {
-                parsedArgs["creativeId"] = creativeId;
-            }
+            // Set arguments.
+            parsedArgs["account_id"] = accountId;
+            parsedArgs["creative_id"] = creativeId;
+            // Validate that options were set correctly.
+            Utilities.ValidateOptions(options, parsedArgs, requiredOptions, extras);
 
             return parsedArgs;
         }
@@ -128,8 +102,8 @@ namespace Google.Apis.RealTimeBidding.Examples.v1.Buyers.Creatives
         /// <param name="parsedArgs">Parsed arguments for the example.</param>
         protected override void Run(Dictionary<string, object> parsedArgs)
         {
-            var accountId = (string) parsedArgs["accountId"];
-            var creativeId = (string) parsedArgs["creativeId"];
+            var accountId = (string) parsedArgs["account_id"];
+            var creativeId = (string) parsedArgs["creative_id"];
             var name = $"buyers/{accountId}/creatives/{creativeId}";
             IList<String> declaredClickThroughUrls = new List<string>(new string[] {
                 $"https://test.clickurl.com/{System.Guid.NewGuid()}",
@@ -158,9 +132,8 @@ namespace Google.Apis.RealTimeBidding.Examples.v1.Buyers.Creatives
             }
             catch (System.Exception exception)
             {
-                Console.Error.WriteLine("Real-time Bidding API returned error response:\n{0}",
-                                        exception.Message);
-                Environment.Exit(1);
+                throw new ApplicationException(
+                    $"Real-time Bidding API returned error response:\n{exception.Message}");
             }
 
             Utilities.PrintCreative(response);

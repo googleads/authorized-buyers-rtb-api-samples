@@ -69,7 +69,7 @@ namespace Google.Apis.RealTimeBidding.Examples
 
                 if(showHelp != true)
                 {
-                    Console.Error.WriteLine("\nRequired argument \"example\" not specified.");
+                    Console.Error.WriteLine(@"\nRequired argument ""example"" not specified.");
                     Environment.Exit(1);
                 }
 
@@ -130,7 +130,16 @@ namespace Google.Apis.RealTimeBidding.Examples
 
             ExampleBase example = examples[exampleName];
             Console.WriteLine(example.Description);
-            example.ExecuteExample(exampleArgs);
+            
+            try
+            {
+                example.ExecuteExample(exampleArgs);
+            }
+            catch(ApplicationException ex)
+            {
+                Console.WriteLine(ex);
+                Environment.Exit(1);
+            }
 
             Console.WriteLine("Press any key to continue...");
             Console.ReadKey();

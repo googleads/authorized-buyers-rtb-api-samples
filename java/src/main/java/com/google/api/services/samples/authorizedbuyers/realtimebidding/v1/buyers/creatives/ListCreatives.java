@@ -58,7 +58,7 @@ public class ListCreatives {
         System.out.printf("RealTimeBidding API returned error response:\n%s", ex);
         System.exit(1);
       }
-      if (creatives.isEmpty()) {
+      if (creatives == null) {
         System.out.println("No creatives found.");
       } else {
         for(Creative creative: creatives) {

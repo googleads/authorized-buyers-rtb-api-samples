@@ -187,6 +187,170 @@ def print_creative(creative)
 end
 
 
+def print_pretargeting_config(pretargeting_config)
+
+  puts "* Pretargeting configuration name: #{pretargeting_config.name}"
+  puts "\t- Display name: #{pretargeting_config.display_name}"
+  puts "\t- Billing ID: #{pretargeting_config.billing_id}"
+  puts "\t- State: #{pretargeting_config.state}"
+
+  included_formats = pretargeting_config.included_formats
+  unless included_formats.nil?
+    puts "\t- Included formats: #{included_formats.join(",")}"
+  end
+
+  maximum_qps = pretargeting_config.maximum_qps
+  unless maximum_qps.nil?
+    puts "\t- Maximum QPS: #{maximum_qps}"
+  end
+
+  geo_targeting = pretargeting_config.geo_targeting
+  unless geo_targeting.nil?
+    puts "\t- Geo targeting:"
+
+    included_geo_ids = geo_targeting.included_ids
+    unless included_geo_ids.nil?
+      puts "\t\tIncluded geo IDs: #{included_geo_ids.join(",")}"
+    end
+
+    excluded_geo_ids = geo_targeting.excluded_ids
+    unless excluded_geo_ids.nil?
+      puts "\t\tExcluded geo IDs: #{excluded_geo_ids.join(",")}"
+    end
+  end
+
+  invalid_geo_ids = pretargeting_config.invalid_geo_ids
+  unless invalid_geo_ids.nil?
+    puts "\t\tInvalid geo IDs: #{invalid_geo_ids.join(",")}"
+  end
+
+  user_list_targeting = pretargeting_config.user_list_targeting
+  unless user_list_targeting.nil?
+    puts "\t- User list targeting:"
+
+    included_user_list_ids = user_list_targeting.included_ids
+    unless included_user_list_ids.nil?
+      puts "\t\tIncluded user list IDs: #{included_user_list_ids.join(",")}"
+    end
+
+    excluded_user_list_ids = user_list_targeting.excluded_ids
+    unless excluded_user_list_ids.nil?
+      puts "\t\tExcluded user list IDs: #{excluded_user_list_ids.join(",")}"
+    end
+  end
+
+  interstitial_targeting = pretargeting_config.interstitial_targeting
+  unless interstitial_targeting.nil?
+    puts "\t- Interstitial targeting: #{interstitial_targeting}"
+  end
+
+  allowed_user_targeting_modes = pretargeting_config.allowed_user_targeting_modes
+  unless allowed_user_targeting_modes.nil?
+    puts "\t- Allowed user targeting modes: #{allowed_user_targeting_modes.join(",")}"
+  end
+
+  excluded_content_label_ids = pretargeting_config.excluded_content_label_ids
+  unless excluded_content_label_ids.nil?
+    puts "\t- Excluded content label IDs: #{excluded_content_label_ids.join(",")}"
+  end
+
+  included_user_id_types = pretargeting_config.included_user_id_types
+  unless included_user_id_types.nil?
+    puts "\t- Included user ID types: #{included_user_id_types.join(",")}"
+  end
+
+  included_languages = pretargeting_config.included_languages
+  unless included_languages.nil?
+    puts "\t- Included languages: #{included_languages.join(",")}"
+  end
+
+  included_mobile_operating_system_ids = pretargeting_config.included_mobile_operating_system_ids
+  unless included_mobile_operating_system_ids.nil?
+    puts "\t- Included mobile operating system IDs: #{included_mobile_operating_system_ids.join(",")}"
+  end
+
+  vertical_targeting = pretargeting_config.vertical_targeting
+  unless vertical_targeting.nil?
+    puts "\t- Vertical targeting:"
+
+    included_vertical_ids = vertical_targeting.included_ids
+    unless included_vertical_ids.nil?
+      puts "\t\tIncluded vertical IDs: #{included_vertical_ids.join(",")}"
+    end
+
+    excluded_vertical_ids = vertical_targeting.excluded_ids
+    unless excluded_vertical_ids.nil?
+      puts "\t\tExcluded vertical IDs: #{excluded_vertical_ids.join(",")}"
+    end
+  end
+
+  included_platforms = pretargeting_config.included_platforms
+  unless included_platforms.nil?
+    puts "\t- Included platforms: #{included_platforms.join(",")}"
+  end
+
+  included_creative_dimensions = pretargeting_config.included_creative_dimensions
+  unless included_creative_dimensions.nil?
+    puts "\t- Included creative dimensions:"
+
+    included_creative_dimensions.each do |creative_dimension|
+      puts "\t\tHeight: #{creative_dimension.height}; Width: #{creative_dimension.width}"
+    end
+  end
+
+  included_environments = pretargeting_config.included_environments
+  unless included_environments.nil?
+    puts "\t- Included environments: #{included_environments.join(",")}"
+  end
+
+  web_targeting = pretargeting_config.web_targeting
+  unless web_targeting.nil?
+    puts "\t- Web targeting:"
+    puts "\t\tTargeting mode: #{web_targeting.targeting_mode}"
+    puts "\t\tSite URLs: #{web_targeting.values.join(",")}"
+  end
+
+  app_targeting = pretargeting_config.app_targeting
+  unless app_targeting.nil?
+    puts "\t- App targeting:"
+
+    mobile_app_targeting = app_targeting.mobile_app_targeting
+    unless mobile_app_targeting.nil?
+      puts "\t\t* Mobile app targeting:"
+      puts "\t\t\tTargeting mode: #{mobile_app_targeting.targeting_mode}"
+      puts "\t\t\tApp IDs: #{mobile_app_targeting.values.join(",")}"
+    end
+
+    mobile_app_category_targeting = app_targeting.mobile_app_category_targeting
+    unless mobile_app_category_targeting.nil?
+      puts "\t\t* Mobile app category targeting:"
+
+      included_category_ids = mobile_app_category_targeting.included_ids
+      unless included_category_ids.nil?
+        puts "\t\tIncluded category IDs: #{included_category_ids.join(",")}"
+      end
+
+      excluded_category_ids = mobile_app_category_targeting.excluded_ids
+      unless excluded_vertical_ids.nil?
+        puts "\t\tExcluded category IDs: #{excluded_category_ids.join(",")}"
+      end
+    end
+  end
+
+  publisher_targeting = pretargeting_config.publisher_targeting
+  unless publisher_targeting.nil?
+    puts "\t- Publisher targeting:"
+    puts "\t\tTargeting mode: #{publisher_targeting.targeting_mode}"
+    puts "\t\tPublisher IDs: #{publisher_targeting.values.join(",")}"
+  end
+
+  minimum_viewability_decile = pretargeting_config.minimum_viewability_decile
+  unless minimum_viewability_decile.nil?
+    puts "\t- Minimum viewability decile: #{minimum_viewability_decile}"
+  end
+end
+
+
 # An option to be passed into the example via a command-line argument.
 class Option
 

@@ -48,16 +48,14 @@ namespace Google.Apis.RealTimeBidding.Examples.v1.Bidders.Creatives
         /// </summary>
         public override string Description
         {
-            get
-            {
-                return "Enables watching creative status changes for the given bidder account.";
-            }
+            get => "Enables watching creative status changes for the given bidder account.";
         }
 
         /// <summary>
         /// Parse specified arguments.
         /// </summary>
         protected override Dictionary<string, object> ParseArguments(List<string> exampleArgs) {
+            string[] requiredOptions = new string[] {"account_id"};
             bool showHelp = false;
 
             string accountId = null;
@@ -87,27 +85,10 @@ namespace Google.Apis.RealTimeBidding.Examples.v1.Bidders.Creatives
                 options.WriteOptionDescriptions(Console.Out);
                 Environment.Exit(0);
             }
-            // Handle error conditions.
-            if(extras.Count > 0)
-            {
-                Console.Error.WriteLine("Unknown arguments specified:");
-                foreach(string arg in extras)
-                {
-                    Console.Error.WriteLine(arg);
-                }
-                Environment.Exit(1);
-            }
-            // Verify required arguments were set.
-            if(accountId == null)
-            {
-                Console.Error.WriteLine("Required argument \"account_id\" not specified.");
-                options.WriteOptionDescriptions(Console.Error);
-                Environment.Exit(1);
-            }
-            else
-            {
-                parsedArgs["accountId"] = accountId;
-            }
+            // Set arguments.
+            parsedArgs["account_id"] = accountId;
+            // Validate that options were set correctly.
+            Utilities.ValidateOptions(options, parsedArgs, requiredOptions, extras);
 
             return parsedArgs;
         }
@@ -118,7 +99,7 @@ namespace Google.Apis.RealTimeBidding.Examples.v1.Bidders.Creatives
         /// <param name="parsedArgs">Parsed arguments for the example.</param>
         protected override void Run(Dictionary<string, object> parsedArgs)
         {
-            var accountId = (string) parsedArgs["accountId"];
+            var accountId = (string) parsedArgs["account_id"];
             var parentBidderName = $"bidders/{accountId}";
 
             WatchCreativesRequest body = new WatchCreativesRequest();
@@ -137,9 +118,8 @@ namespace Google.Apis.RealTimeBidding.Examples.v1.Bidders.Creatives
             }
             catch (System.Exception exception)
             {
-                Console.Error.WriteLine("Real-time Bidding API returned error response:\n{0}",
-                                        exception.Message);
-                Environment.Exit(1);
+                throw new ApplicationException(
+                    $"Real-time Bidding API returned error response:\n{exception.Message}");
             }
 
             Console.WriteLine("- Topic: {0}", response.Topic);

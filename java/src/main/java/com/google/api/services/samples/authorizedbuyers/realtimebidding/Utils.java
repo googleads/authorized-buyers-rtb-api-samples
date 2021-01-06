@@ -15,12 +15,17 @@
 package com.google.api.services.samples.authorizedbuyers.realtimebidding;
 
 import com.google.api.client.http.HttpRequestInitializer;
+import com.google.api.services.realtimebidding.v1.model.AppTargeting;
 import com.google.api.services.realtimebidding.v1.model.Creative;
+import com.google.api.services.realtimebidding.v1.model.CreativeDimensions;
 import com.google.api.services.realtimebidding.v1.model.CreativeServingDecision;
 import com.google.api.services.realtimebidding.v1.model.Date;
 import com.google.api.services.realtimebidding.v1.model.HtmlContent;
 import com.google.api.services.realtimebidding.v1.model.Image;
 import com.google.api.services.realtimebidding.v1.model.NativeContent;
+import com.google.api.services.realtimebidding.v1.model.NumericTargetingDimension;
+import com.google.api.services.realtimebidding.v1.model.PretargetingConfig;
+import com.google.api.services.realtimebidding.v1.model.StringTargetingDimension;
 import com.google.api.services.realtimebidding.v1.model.UrlRestriction;
 import com.google.api.services.realtimebidding.v1.model.UserList;
 import com.google.api.services.realtimebidding.v1.model.VideoContent;
@@ -41,7 +46,6 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormat;
@@ -291,7 +295,233 @@ public class Utils {
         System.out.printf("\t\tVideo VAST XML: %s\n", videoVastXML);
       }
     }
+  }
 
+  /**
+   * Prints a {@code PretargetingConfig} instance in a human-readable format.
+   */
+  public static void printPretargetingConfig(PretargetingConfig pretargetingConfig) {
+    System.out.printf("* Pretargeting configuration name: %s\n", pretargetingConfig.getName());
+    System.out.printf("\t- Display name: %s\n", pretargetingConfig.getDisplayName());
+    System.out.printf("\t- Billing ID: %s\n", pretargetingConfig.getBillingId());
+    System.out.printf("\t- State: %s\n", pretargetingConfig.getState());
+
+    Long maximumQps = pretargetingConfig.getMaximumQps();
+    if (maximumQps != null) {
+      System.out.printf("\t- Maximum QPS: %s\n", maximumQps);
+    }
+
+    String interstitialTargeting = pretargetingConfig.getInterstitialTargeting();
+    if (interstitialTargeting != null) {
+      System.out.printf("\t- Interstitial targeting: %s\n", interstitialTargeting);
+    }
+
+    Integer minimumViewabilityDecile = pretargetingConfig.getMinimumViewabilityDecile();
+    if (minimumViewabilityDecile != null) {
+      System.out.printf("\t- Minimum viewability decile: %s\n", minimumViewabilityDecile);
+    }
+
+    List<String> includedFormats = pretargetingConfig.getIncludedFormats();
+    if (includedFormats != null && !includedFormats.isEmpty()) {
+      System.out.println("\t- Included formats:");
+      for (String includedFormat : includedFormats) {
+        System.out.printf("\t\t%s\n", includedFormat);
+      }
+    }
+
+    NumericTargetingDimension geoTargeting = pretargetingConfig.getGeoTargeting();
+    if (geoTargeting != null) {
+      System.out.println("\t- Geo targeting:");
+
+      List<Long> includedIds = geoTargeting.getIncludedIds();
+      if (includedIds != null && !includedIds.isEmpty()) {
+        System.out.println("\t\t- Included geo IDs:");
+        for (Long id : includedIds) {
+          System.out.printf("\t\t\t%s\n", id);
+        }
+      }
+
+      List<Long> excludedIds = geoTargeting.getExcludedIds();
+      if (excludedIds != null && !excludedIds.isEmpty()) {
+        System.out.println("\t\t- Excluded geo IDs:");
+        for (Long id : excludedIds) {
+          System.out.printf("\t\t\t%s\n", id);
+        }
+      }
+    }
+
+    List<Long> invalidGeoIds = pretargetingConfig.getInvalidGeoIds();
+    if (invalidGeoIds != null && !invalidGeoIds.isEmpty()) {
+      System.out.println("\t- Invalid geo IDs:");
+      for (Long id : invalidGeoIds) {
+        System.out.printf("\t\t%s\n", id);
+      }
+    }
+
+    NumericTargetingDimension userListTargeting = pretargetingConfig.getUserListTargeting();
+    if (userListTargeting != null) {
+      System.out.println("\t- User list targeting:");
+
+      List<Long> includedIds = userListTargeting.getIncludedIds();
+      if (includedIds != null && !includedIds.isEmpty()) {
+        System.out.println("\t\t- Included user list IDs:");
+        for (Long id : includedIds) {
+          System.out.printf("\t\t\t%s\n", id);
+        }
+      }
+
+      List<Long> excludedIds = userListTargeting.getExcludedIds();
+      if (excludedIds != null && !excludedIds.isEmpty()) {
+        System.out.println("\t\t- Excluded user list IDs:");
+        for (Long id : excludedIds) {
+          System.out.printf("\t\t\t%s\n", id);
+        }
+      }
+    }
+
+    List<String> allowedUserTargetingModes = pretargetingConfig.getAllowedUserTargetingModes();
+    if (allowedUserTargetingModes != null && !allowedUserTargetingModes.isEmpty()) {
+      System.out.println("\t- Allowed user targeting modes:");
+      for (String userTargetingMode : allowedUserTargetingModes) {
+        System.out.printf("\t\t%s\n", userTargetingMode);
+      }
+    }
+
+    List<Long> excludedContentLabelIds = pretargetingConfig.getExcludedContentLabelIds();
+    if (excludedContentLabelIds != null && !excludedContentLabelIds.isEmpty()) {
+      System.out.println("\t- Excluded content label IDs:");
+      for (Long id : excludedContentLabelIds) {
+        System.out.printf("\t\t%s\n", id);
+      }
+    }
+
+    List<String> includedUserIdTypes = pretargetingConfig.getIncludedUserIdTypes();
+    if (includedUserIdTypes != null && !includedUserIdTypes.isEmpty()) {
+      System.out.println("\t- Included user ID types:");
+      for (String userIdType : includedUserIdTypes) {
+        System.out.printf("\t\t%s\n", userIdType);
+      }
+    }
+
+    List<String> includedLanguages = pretargetingConfig.getIncludedLanguages();
+    if (includedLanguages != null && !includedLanguages.isEmpty()) {
+      System.out.println("\t- Included languages:");
+      for (String language : includedLanguages) {
+        System.out.printf("\t\t%s\n", language);
+      }
+    }
+
+    List<Long> includedMobileOSIds = pretargetingConfig.getIncludedMobileOperatingSystemIds();
+    if (includedMobileOSIds != null && !includedMobileOSIds.isEmpty()) {
+      System.out.println("\t- Included mobile operating system IDs:");
+      for (Long id : includedMobileOSIds) {
+        System.out.printf("\t\t%s\n", id);
+      }
+    }
+
+    NumericTargetingDimension verticalTargeting = pretargetingConfig.getVerticalTargeting();
+    if (verticalTargeting != null) {
+      System.out.println("\t- Vertical targeting:");
+
+      List<Long> includedIds = verticalTargeting.getIncludedIds();
+      if (includedIds != null && !includedIds.isEmpty()) {
+        System.out.println("\t\t- Included vertical IDs:");
+        for (Long id : includedIds) {
+          System.out.printf("\t\t\t%s\n", id);
+        }
+      }
+
+      List<Long> excludedIds = verticalTargeting.getExcludedIds();
+      if (excludedIds != null && !excludedIds.isEmpty()) {
+        System.out.println("\t\t- Excluded vertical IDs:");
+        for (Long id : excludedIds) {
+          System.out.printf("\t\t\t%s\n", id);
+        }
+      }
+    }
+
+    List<String> includedPlatforms = pretargetingConfig.getIncludedPlatforms();
+    if (includedPlatforms != null && !includedPlatforms.isEmpty()) {
+      System.out.println("\t- Included platforms:");
+      for (String platform : includedPlatforms) {
+        System.out.printf("\t\t%s\n", platform);
+      }
+    }
+
+    List<CreativeDimensions> creativeDimensions =
+        pretargetingConfig.getIncludedCreativeDimensions();
+    if (creativeDimensions != null && !creativeDimensions.isEmpty()) {
+      System.out.println("\t- Included creative dimensions:");
+      for (CreativeDimensions dimensions : creativeDimensions) {
+        System.out.printf("\t\tHeight: %s; Width: %s\n",
+            dimensions.getHeight(), dimensions.getWidth());
+      }
+    }
+
+    List<String> includedEnvironments = pretargetingConfig.getIncludedEnvironments();
+    if (includedEnvironments != null && !includedEnvironments.isEmpty()) {
+      System.out.println("\t- Included environments:");
+      for (String environment : includedEnvironments) {
+        System.out.printf("\t\t%s\n", environment);
+      }
+    }
+
+    StringTargetingDimension webTargeting = pretargetingConfig.getWebTargeting();
+    if (webTargeting != null) {
+      System.out.println("\t- Web targeting:");
+      System.out.printf("\t\t- Targeting mode: %s\n", webTargeting.getTargetingMode());
+      System.out.println("\t\t- Site URLs:");
+      for (String siteUrl : webTargeting.getValues()) {
+        System.out.printf("\t\t\t%s\n", siteUrl);
+      }
+    }
+
+    AppTargeting appTargeting = pretargetingConfig.getAppTargeting();
+    if (appTargeting != null) {
+      System.out.println("\t- App targeting:");
+
+      StringTargetingDimension mobileAppTargeting = appTargeting.getMobileAppTargeting();
+      if (mobileAppTargeting != null) {
+        System.out.println("\t\t- Mobile app targeting:");
+        System.out.printf("\t\t\t- Targeting mode: %s\n", mobileAppTargeting.getTargetingMode());
+        System.out.println("\t\t\t- Mobile App IDs:");
+        for (String appId : mobileAppTargeting.getValues()) {
+          System.out.printf("\t\t\t\t%s\n", appId);
+        }
+      }
+
+      NumericTargetingDimension mobileAppCategoryTargeting =
+          appTargeting.getMobileAppCategoryTargeting();
+      if (mobileAppCategoryTargeting != null) {
+        System.out.println("\t\t- Mobile app category targeting:");
+
+        List<Long> includedIds = mobileAppCategoryTargeting.getIncludedIds();
+        if (includedIds != null && !includedIds.isEmpty()) {
+          System.out.println("\t\t- Included mobile app category targeting IDs:");
+          for (Long id : includedIds) {
+            System.out.printf("\t\t\t%s\n", id);
+          }
+        }
+
+        List<Long> excludedIds = mobileAppCategoryTargeting.getExcludedIds();
+        if (excludedIds != null && !excludedIds.isEmpty()) {
+          System.out.println("\t\t- Excluded mobile app category targeting IDs:");
+          for (Long id : excludedIds) {
+            System.out.printf("\t\t\t%s\n", id);
+          }
+        }
+      }
+    }
+
+    StringTargetingDimension publisherTargeting = pretargetingConfig.getPublisherTargeting();
+    if (publisherTargeting != null) {
+      System.out.println("\t- Publisher targeting:");
+      System.out.printf("\t\t- Targeting mode: %s\n", publisherTargeting.getTargetingMode());
+      System.out.println("\t\t- Publisher IDs:");
+      for (String publisherId : publisherTargeting.getValues()) {
+        System.out.printf("\t\t\t%s\n", publisherId);
+      }
+    }
   }
 
   /**

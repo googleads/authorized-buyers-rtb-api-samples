@@ -24,9 +24,9 @@
     <PackageReference Include="Google.Apis.Auth" Version="1.49.0" />
     <PackageReference Include="Google.Apis.Core" Version="1.49.0" />
     <PackageReference Include="Google.Apis.Oauth2.v2" Version="1.48.0.1869" />
-    <PackageReference Include="Google.Apis.PubSub.v1" Version="1.49.0.2045" />
-    <PackageReference Include="Google.Apis.RealTimeBidding.v1" Version="1.49.0.2107" />
-    <PackageReference Include="log4net" Version="2.0.9" />
+    <PackageReference Include="Google.Apis.PubSub.v1" Version="1.49.0.2161" />
+    <PackageReference Include="Google.Apis.RealTimeBidding.v1" Version="1.49.0.2173" />
+    <PackageReference Include="log4net" Version="2.0.12" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="3.1.4" />
     <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0">
       <PrivateAssets>all</PrivateAssets>
