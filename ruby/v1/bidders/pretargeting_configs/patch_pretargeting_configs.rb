@@ -59,7 +59,7 @@ def patch_pretargeting_configs(realtimebidding, options)
 
   puts "Patching a pretargeting configuration with name: '#{name}'"
 
-  pretargeting_config = realtimebidding.patch_bidder_pretargeting_config(name, body)
+  pretargeting_config = realtimebidding.patch_bidder_pretargeting_config(name, body, update_mask: update_mask)
   print_pretargeting_config(pretargeting_config)
 end
 
