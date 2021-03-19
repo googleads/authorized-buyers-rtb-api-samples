@@ -123,10 +123,18 @@ class Config
     {
         return [
            self::$apiVersion => [
+               'Bidders' => [
+                   'GetBidders',
+                   'ListBidders'
+               ],
                'Bidders_Creatives' => [
                    'ListCreatives',
                    'WatchCreatives',
                    'PullWatchedCreativesSubscription'
+               ],
+               'Bidders_Endpoints' => [
+                   'GetEndpoints',
+                   'ListEndpoints'
                ],
                'Bidders_PretargetingConfigs' => [
                    'GetPretargetingConfigs',
@@ -142,6 +150,10 @@ class Config
                    'ActivatePretargetingConfigs',
                    'SuspendPretargetingConfigs',
                    'DeletePretargetingConfigs'
+               ],
+               'Buyers' => [
+                   'GetBuyers',
+                   'ListBuyers'
                ],
                'Buyers_Creatives' => [
                    'GetCreatives',
