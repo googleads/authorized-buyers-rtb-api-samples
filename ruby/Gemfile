@@ -2,4 +2,5 @@ source "https://rubygems.org"
 
 ruby "2.6.0"
 
-gem 'google-api-client', '~> 0.50'
+gem 'google-apis-pubsub_v1', '0.3.0'
+gem 'google-apis-realtimebidding_v1', '~> 0.3.0'

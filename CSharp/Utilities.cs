@@ -43,6 +43,77 @@ namespace Google.Apis.RealTimeBidding.Examples
         public static int MAX_PAGE_SIZE = 50;
 
         /// <summary>
+        /// Print a human-readable representation of a single bidder.
+        /// </summary>
+        public static void PrintBidder(Bidder bidder)
+        {
+            Console.WriteLine("* Bidder name: {0}", bidder.Name);
+
+            string cookieMatchingUrl = bidder.CookieMatchingUrl;
+            if(cookieMatchingUrl != null)
+            {
+                Console.WriteLine("\t- Cookie Matching URL: {0}", cookieMatchingUrl);
+            }
+
+            string cookieMatchingNid = bidder.CookieMatchingNetworkId;
+            if(cookieMatchingNid != null)
+            {
+                Console.WriteLine("\t- Cookie Matching Network ID: {0}", cookieMatchingNid);
+            }
+
+            bool? bypassNonGuaranteedDealsPretargeting = bidder.BypassNonguaranteedDealsPretargeting;
+            if(bypassNonGuaranteedDealsPretargeting != null)
+            {
+                Console.WriteLine("\t- Bypass Non-Guaranteed Deals Pretargeting: {0}",
+                                  bypassNonGuaranteedDealsPretargeting);
+            }
+
+            string dealsBillingId = bidder.DealsBillingId;
+            if(dealsBillingId != null)
+            {
+                Console.WriteLine("\t- Deals Billing ID: {0}", dealsBillingId);
+            }
+        }
+
+        /// <summary>
+        /// Print a human-readable representation of a single buyer.
+        /// </summary>
+        public static void PrintBuyer(Buyer buyer)
+        {
+            Console.WriteLine("* Buyer name: {0}", buyer.Name);
+
+            string displayName = buyer.DisplayName;
+            if(displayName != null)
+            {
+                Console.WriteLine("\t- Display Name: {0}", displayName);
+            }
+
+            string bidder = buyer.Bidder;
+            if(bidder != null)
+            {
+                Console.WriteLine("\t- Bidder: {0}", bidder);
+            }
+
+            long? activeCreativeCount = buyer.ActiveCreativeCount;
+            if(activeCreativeCount != null)
+            {
+                Console.WriteLine("\t- Active Creative Count: {0}", activeCreativeCount);
+            }
+
+            long? maximumActiveCreativeCount = buyer.MaximumActiveCreativeCount;
+            if(maximumActiveCreativeCount != null)
+            {
+                Console.WriteLine("\t- Maximum Active Creative Count: {0}", maximumActiveCreativeCount);
+            }
+
+            IList<string> billingIds = buyer.BillingIds;
+            if(billingIds != null)
+            {
+                Console.WriteLine("\t- billingIds:\n\t\t" + String.Join("\n\t\t", billingIds));
+            }
+        }
+
+        /// <summary>
         /// Print a human-readable representation of a single creative.
         /// </summary>
         public static void PrintCreative(Creative creative)
@@ -177,6 +248,38 @@ namespace Google.Apis.RealTimeBidding.Examples
                 {
                     Console.WriteLine("\t\tVideo VAST XML:\n{0}", videoVastXml);
                 }
+            }
+        }
+
+        /// <summary>
+        /// Print a human-readable representation of a single endpoint.
+        /// </summary>
+        public static void PrintEndpoint(Endpoint endpoint)
+        {
+            Console.WriteLine("* Endpoint name: {0}", endpoint.Name);
+
+            string url = endpoint.Url;
+            if(url != null)
+            {
+                Console.WriteLine("\t- URL: {0}", url);
+            }
+
+            long? maximumQps = endpoint.MaximumQps;
+            if(maximumQps != null)
+            {
+                Console.WriteLine("\t- Maximum QPS: {0}", maximumQps);
+            }
+
+            string tradingLocation = endpoint.TradingLocation;
+            if(tradingLocation != null)
+            {
+                Console.WriteLine("\t- Trading Location: {0}", tradingLocation);
+            }
+
+            string bidProtocol = endpoint.BidProtocol;
+            if(bidProtocol != null)
+            {
+                Console.WriteLine("\t- Bid Protocol: {0}", bidProtocol);
             }
         }
 

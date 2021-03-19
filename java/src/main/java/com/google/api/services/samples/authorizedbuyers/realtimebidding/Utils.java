@@ -15,20 +15,7 @@
 package com.google.api.services.samples.authorizedbuyers.realtimebidding;
 
 import com.google.api.client.http.HttpRequestInitializer;
-import com.google.api.services.realtimebidding.v1.model.AppTargeting;
-import com.google.api.services.realtimebidding.v1.model.Creative;
-import com.google.api.services.realtimebidding.v1.model.CreativeDimensions;
-import com.google.api.services.realtimebidding.v1.model.CreativeServingDecision;
-import com.google.api.services.realtimebidding.v1.model.Date;
-import com.google.api.services.realtimebidding.v1.model.HtmlContent;
-import com.google.api.services.realtimebidding.v1.model.Image;
-import com.google.api.services.realtimebidding.v1.model.NativeContent;
-import com.google.api.services.realtimebidding.v1.model.NumericTargetingDimension;
-import com.google.api.services.realtimebidding.v1.model.PretargetingConfig;
-import com.google.api.services.realtimebidding.v1.model.StringTargetingDimension;
-import com.google.api.services.realtimebidding.v1.model.UrlRestriction;
-import com.google.api.services.realtimebidding.v1.model.UserList;
-import com.google.api.services.realtimebidding.v1.model.VideoContent;
+import com.google.api.services.realtimebidding.v1.model.*;
 import com.google.auth.http.HttpCredentialsAdapter;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.auth.oauth2.ServiceAccountCredentials;
@@ -172,6 +159,68 @@ public class Utils {
   }
 
   /**
+   * Prints a {@code Bidder} instance in a human-readable format.
+   */
+  public static void printBidder(Bidder bidder) {
+    System.out.printf("* Bidder name: %s\n", bidder.getName());
+
+    String cookieMatchingUrl = bidder.getCookieMatchingUrl();
+    if (cookieMatchingUrl != null) {
+      System.out.printf("\t- Cookie Matching URL: %s\n", cookieMatchingUrl);
+    }
+
+    String cookieMatchingNetworkId = bidder.getCookieMatchingNetworkId();
+    if (cookieMatchingNetworkId != null) {
+      System.out.printf("\t- Cookie Matching Network ID: %s\n", cookieMatchingNetworkId);
+    }
+
+    Boolean bypassNonGuaranteedDealsPretargeting = bidder.getBypassNonguaranteedDealsPretargeting();
+    if (bypassNonGuaranteedDealsPretargeting != null) {
+      System.out.printf("\t- Bypass Non-Guaranteed Deals Pretargeting: %s\n", bypassNonGuaranteedDealsPretargeting);
+    }
+
+    String dealsBillingId = bidder.getDealsBillingId();
+    if (dealsBillingId != null) {
+      System.out.printf("\t- Deals ID: %s\n", dealsBillingId);
+    }
+  }
+
+  /**
+   * Prints a {@code Buyer} instance in a human-readable format.
+   */
+  public static void printBuyer(Buyer buyer) {
+    System.out.printf("* Buyer name: %s\n", buyer.getName());
+
+    String displayName = buyer.getDisplayName();
+    if (displayName != null) {
+      System.out.printf("\t- Display name: %s\n", displayName);
+    }
+
+    String bidder = buyer.getBidder();
+    if (bidder != null) {
+      System.out.printf("\t- Bidder: %s\n", bidder);
+    }
+
+    Long activeCreativeCount = buyer.getActiveCreativeCount();
+    if (activeCreativeCount != null) {
+      System.out.printf("\t- Active creative count: %s\n", activeCreativeCount);
+    }
+
+    Long maximumActiveCreativeCount = buyer.getMaximumActiveCreativeCount();
+    if (maximumActiveCreativeCount != null) {
+      System.out.printf("\t- Maximum active creative count: %s\n", maximumActiveCreativeCount);
+    }
+
+    List<String> billingIds = buyer.getBillingIds();
+    if (billingIds != null && !billingIds.isEmpty()) {
+      System.out.println("\t- Billing IDs:");
+      for (String billingId : billingIds) {
+        System.out.printf("\t\t%s\n", billingId);
+      }
+    }
+  }
+
+  /**
    * Prints a {@code Creative} instance in a human-readable format.
    */
   public static void printCreative(Creative creative) {
@@ -294,6 +343,33 @@ public class Utils {
       if (videoVastXML != null) {
         System.out.printf("\t\tVideo VAST XML: %s\n", videoVastXML);
       }
+    }
+  }
+
+  /**
+   * Prints a {@code Endpoint} instance in a human-readable format.
+   */
+  public static void printEndpoint(Endpoint endpoint) {
+    System.out.printf("* Endpoint name: %s\n", endpoint.getName());
+
+    String url = endpoint.getUrl();
+    if (url != null) {
+      System.out.printf("\t- URL: %s\n", url);
+    }
+
+    Long maximumQps = endpoint.getMaximumQps();
+    if (maximumQps != null) {
+      System.out.printf("\t- Maximum QPS: %d\n", maximumQps);
+    }
+
+    String tradingLocation = endpoint.getTradingLocation();
+    if (tradingLocation != null) {
+      System.out.printf("\t- Trading location: %s\n", tradingLocation);
+    }
+
+    String bidProtocol = endpoint.getBidProtocol();
+    if (bidProtocol != null) {
+      System.out.printf("\t- Bid protocol: %s\n", bidProtocol);
     }
   }
 

@@ -87,6 +87,55 @@ def get_cloud_pub_sub_service()
 end
 
 
+def print_bidder(bidder)
+  puts "* Bidder name: #{bidder.name}"
+
+  unless bidder.cookie_matching_url.nil?
+    puts "\t- Cookie Matching URL: #{bidder.cookie_matching_url}"
+  end
+
+  unless bidder.cookie_matching_network_id.nil?
+    puts "\t- Cookie Matching Network ID: #{bidder.cookie_matching_network_id}"
+  end
+
+  unless bidder.bypass_nonguaranteed_deals_pretargeting.nil?
+    puts "\t- Bypass Non-Guaranteed Deals Pretargeting: #{bidder.bypass_nonguaranteed_deals_pretargeting}"
+  end
+
+  unless bidder.deals_billing_id.nil?
+    puts "\t- Deals Billing ID: #{bidder.deals_billing_id}"
+  end
+end
+
+
+def print_buyer(buyer)
+  puts "* Buyer name: #{buyer.name}"
+
+  unless buyer.display_name.nil?
+    puts "\t- Display Name: #{buyer.display_name}"
+  end
+
+  unless buyer.bidder.nil?
+    puts "\t- Bidder: #{buyer.bidder}"
+  end
+
+  unless buyer.active_creative_count.nil?
+    puts "\t- Active Creative Count: #{buyer.active_creative_count}"
+  end
+
+  unless buyer.maximum_active_creative_count.nil?
+    puts "\t- Maximum Active Creative Count: #{buyer.maximum_active_creative_count}"
+  end
+
+  unless buyer.billing_ids.nil?
+    puts "\t- Billing IDs:"
+    buyer.billing_ids.each do |billing_id|
+      puts "\t\t#{billing_id}"
+    end
+  end
+end
+
+
 def print_creative(creative)
   puts "* Creative ID: #{creative.creative_id}"
 
@@ -183,6 +232,27 @@ def print_creative(creative)
     unless video.video_vast_xml.nil?
       puts "\t\tVideo VAST XML: #{video.video_vast_xml}"
     end
+  end
+end
+
+
+def print_endpoint(endpoint)
+  puts "* Endpoint name: #{endpoint.name}"
+
+  unless endpoint.url.nil?
+    puts "\t- URL: #{endpoint.url}"
+  end
+
+  unless endpoint.maximum_qps.nil?
+    puts "\t- Maximum QPS: #{endpoint.maximum_qps}"
+  end
+
+  unless endpoint.trading_location.nil?
+    puts "\t- Trading Location: #{endpoint.trading_location}"
+  end
+
+  unless endpoint.bid_protocol.nil?
+    puts "\t- Bid Protocol: #{endpoint.bid_protocol}"
   end
 end
 
