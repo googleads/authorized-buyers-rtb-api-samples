@@ -30,12 +30,10 @@ import net.sourceforge.argparse4j.inf.ArgumentParser;
 import net.sourceforge.argparse4j.inf.ArgumentParserException;
 import net.sourceforge.argparse4j.inf.Namespace;
 
-/**
- * Creates a creative with native content for the given buyer account ID.
- */
+/** Creates a creative with native content for the given buyer account ID. */
 public class CreateNativeCreatives {
 
-  public static void execute(RealTimeBidding client, Namespace parsedArgs) {
+  public static void execute(RealTimeBidding client, Namespace parsedArgs) throws IOException {
     Integer accountId = parsedArgs.getInt("account_id");
 
     String parentBuyerName = String.format("buyers/%s", accountId);
@@ -65,92 +63,109 @@ public class CreateNativeCreatives {
     newCreative.setCreativeId(parsedArgs.getString("creative_id"));
     newCreative.setDeclaredAttributes(parsedArgs.<String>getList("declared_attributes"));
     newCreative.setDeclaredClickThroughUrls(parsedArgs.<String>getList("declared_click_urls"));
-    newCreative.setDeclaredRestrictedCategories(parsedArgs.<String>getList(
-        "declared_restricted_categories"));
+    newCreative.setDeclaredRestrictedCategories(
+        parsedArgs.<String>getList("declared_restricted_categories"));
     newCreative.setDeclaredVendorIds(parsedArgs.<Integer>getList("declared_vendor_ids"));
     newCreative.setNative(nativeContent);
 
-    Creative creative = null;
-    try {
-      creative = client.buyers().creatives().create(parentBuyerName, newCreative).execute();
-    } catch(IOException ex) {
-    System.out.printf("RealTimeBidding API returned error response:\n%s", ex);
-    System.exit(1);
-  }
+    Creative creative = client.buyers().creatives().create(parentBuyerName, newCreative).execute();
 
     System.out.printf("Created creative for buyer Account ID '%s':\n", accountId);
     Utils.printCreative(creative);
   }
 
   public static void main(String[] args) {
-    ArgumentParser parser = ArgumentParsers.newFor("CreateNativeCreatives").build()
-        .defaultHelp(true)
-        .description(("Creates an native creative for the given buyer account ID."));
-    parser.addArgument("-a", "--account_id")
+    ArgumentParser parser =
+        ArgumentParsers.newFor("CreateNativeCreatives")
+            .build()
+            .defaultHelp(true)
+            .description(("Creates an native creative for the given buyer account ID."));
+    parser
+        .addArgument("-a", "--account_id")
         .help("The resource ID of the buyers resource under which the creative is to be created. ")
         .required(true)
         .type(Integer.class);
-    parser.addArgument("--advertiser_name")
+    parser
+        .addArgument("--advertiser_name")
         .help("The name of the company being advertised in the creative.")
         .setDefault("Test");
-    parser.addArgument("-c", "--creative_id")
+    parser
+        .addArgument("-c", "--creative_id")
         .help("The user-specified creative ID. The maximum length of the creative ID is 128 bytes.")
         .setDefault(String.format("Native_Creative_%s", UUID.randomUUID()));
-    parser.addArgument("--declared_attributes")
-        .help("The creative attributes being declared. Specify each attribute separated by a " +
-            "space.")
+    parser
+        .addArgument("--declared_attributes")
+        .help(
+            "The creative attributes being declared. Specify each attribute separated by a "
+                + "space.")
         .nargs("*")
         .setDefault(Collections.singletonList("NATIVE_ELIGIBILITY_ELIGIBLE"));
-    parser.addArgument("--declared_click_urls")
+    parser
+        .addArgument("--declared_click_urls")
         .help("The click-through URLs being declared. Specify each URL separated by a space.")
         .nargs("*")
         .setDefault(Collections.singletonList("http://test.com"));
-    parser.addArgument("--declared_restricted_categories")
-        .help("The restricted categories being declared. Specify each category separated by a " +
-            "space.")
+    parser
+        .addArgument("--declared_restricted_categories")
+        .help(
+            "The restricted categories being declared. Specify each category separated by a "
+                + "space.")
         .nargs("*");
-    parser.addArgument("--declared_vendor_ids")
+    parser
+        .addArgument("--declared_vendor_ids")
         .help("The vendor IDs being declared. Specify each ID separated by a space.")
         .type(Integer.class)
         .nargs("*");
-    parser.addArgument("--native_headline")
+    parser
+        .addArgument("--native_headline")
         .help("A short title for the ad.")
         .setDefault("Luxury Mars Cruises");
-    parser.addArgument("--native_body")
+    parser
+        .addArgument("--native_body")
         .help("A long description of the ad.")
         .setDefault("Visit the planet in a luxury spaceship.");
-    parser.addArgument("--native_call_to_action")
+    parser
+        .addArgument("--native_call_to_action")
         .help("A label for the button that the user is supposed to click.")
         .setDefault("Book today");
-    parser.addArgument("--native_advertiser_name")
+    parser
+        .addArgument("--native_advertiser_name")
         .help("The name of the advertiser or sponsor, to be displayed in the ad creative.")
         .setDefault("Galactic Luxury Cruises");
-    parser.addArgument("--native_image_url")
+    parser
+        .addArgument("--native_image_url")
         .help("The URL of the large image to be included in the native ad.")
         .setDefault("https://native.test.com/image?id=123456");
-    parser.addArgument("--native_image_height")
+    parser
+        .addArgument("--native_image_height")
         .help("The height in pixels of the native ad's large image.")
         .type(Integer.class)
         .setDefault(627);
-    parser.addArgument("--native_image_width")
+    parser
+        .addArgument("--native_image_width")
         .help("The width in pixels of the native ad's large image.")
         .type(Integer.class)
         .setDefault(1200);
-    parser.addArgument("--native_logo_url")
+    parser
+        .addArgument("--native_logo_url")
         .help("The URL of a smaller image to be included in the native ad.")
         .setDefault("https://native.test.com/logo?id=123456");
-    parser.addArgument("--native_logo_height")
+    parser
+        .addArgument("--native_logo_height")
         .help("The height in pixels of the native ad's smaller image.")
         .type(Integer.class)
         .setDefault(100);
-    parser.addArgument("--native_logo_width")
+    parser
+        .addArgument("--native_logo_width")
         .help("The width in pixels of the native ad's smaller image.")
         .type(Integer.class)
         .setDefault(100);
-    parser.addArgument("--native_click_link_url")
+    parser
+        .addArgument("--native_click_link_url")
         .help("The URL that the browser/SDK will load when the user clicks the ad.")
         .setDefault("https://www.google.com");
-    parser.addArgument("--native_click_tracking_url")
+    parser
+        .addArgument("--native_click_tracking_url")
         .help("The URL to use for click tracking.")
         .setDefault("https://native.test.com/click?id=123456");
 
@@ -174,6 +189,11 @@ public class CreateNativeCreatives {
       System.exit(1);
     }
 
-    execute(client, parsedArgs);
+    try {
+      execute(client, parsedArgs);
+    } catch (IOException ex) {
+      System.out.printf("RealTimeBidding API returned error response:\n%s", ex);
+      System.exit(1);
+    }
   }
 }

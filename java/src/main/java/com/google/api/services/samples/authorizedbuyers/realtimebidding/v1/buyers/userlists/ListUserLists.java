@@ -22,53 +22,55 @@ import com.google.api.services.samples.authorizedbuyers.realtimebidding.Utils;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.List;
-
 import net.sourceforge.argparse4j.ArgumentParsers;
 import net.sourceforge.argparse4j.inf.ArgumentParser;
 import net.sourceforge.argparse4j.inf.ArgumentParserException;
 import net.sourceforge.argparse4j.inf.Namespace;
 
-/**
- * This sample illustrates how to list UserLists.
- */
+/** This sample illustrates how to list UserLists. */
 public class ListUserLists {
 
-  public static void execute(RealTimeBidding client, Namespace parsedArgs) {
+  public static void execute(RealTimeBidding client, Namespace parsedArgs) throws IOException {
     Integer accountId = parsedArgs.getInt("account_id");
     Integer pageSize = parsedArgs.getInt("page_size");
 
     String parentBuyerName = String.format("buyers/%s", accountId);
-    List<UserList> userLists = null;
-
-    try {
-      userLists = client.buyers().userLists().list(parentBuyerName).setPageSize(pageSize)
-          .execute().getUserLists();
-    } catch(IOException ex) {
-      System.out.printf("RealTimeBidding API returned error response:\n%s", ex);
-      System.exit(1);
-    }
+    List<UserList> userLists =
+        client
+            .buyers()
+            .userLists()
+            .list(parentBuyerName)
+            .setPageSize(pageSize)
+            .execute()
+            .getUserLists();
 
     System.out.printf("Found UserLists for buyer Account ID '%d':\n", accountId);
 
-    for(UserList userList: userLists) {
+    for (UserList userList : userLists) {
       Utils.printUserList(userList);
     }
   }
 
   public static void main(String[] args) {
-    ArgumentParser parser = ArgumentParsers.newFor("ListUserLists").build()
-        .defaultHelp(true)
-        .description(("Lists user lists associated with the given buyer account."));
-    parser.addArgument("-a", "--account_id")
-        .help("The resource ID of the buyers resource under which the user lists were created. " +
-            "This will be used to construct the parent used as a path parameter for the " +
-            "userLists.list request.")
+    ArgumentParser parser =
+        ArgumentParsers.newFor("ListUserLists")
+            .build()
+            .defaultHelp(true)
+            .description(("Lists user lists associated with the given buyer account."));
+    parser
+        .addArgument("-a", "--account_id")
+        .help(
+            "The resource ID of the buyers resource under which the user lists were created. "
+                + "This will be used to construct the parent used as a path parameter for the "
+                + "userLists.list request.")
         .required(true)
         .type(Integer.class);
-    parser.addArgument("-p", "--page_size")
-        .help("The resource ID of the buyers resource under which the user lists were created. " +
-            "This will be used to construct the parent used as a path parameter for the " +
-            "userLists.list request.")
+    parser
+        .addArgument("-p", "--page_size")
+        .help(
+            "The resource ID of the buyers resource under which the user lists were created. "
+                + "This will be used to construct the parent used as a path parameter for the "
+                + "userLists.list request.")
         .setDefault(Utils.getMaximumPageSize())
         .type(Integer.class);
 
@@ -92,6 +94,11 @@ public class ListUserLists {
       System.exit(1);
     }
 
-    execute(client, parsedArgs);
+    try {
+      execute(client, parsedArgs);
+    } catch (IOException ex) {
+      System.out.printf("RealTimeBidding API returned error response:\n%s", ex);
+      System.exit(1);
+    }
   }
 }

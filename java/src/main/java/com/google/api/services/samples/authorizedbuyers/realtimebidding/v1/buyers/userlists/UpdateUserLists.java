@@ -32,10 +32,10 @@ import org.joda.time.format.DateTimeFormatter;
 /**
  * This sample illustrates how to update UserLists.
  *
- * Note that a user list's status can not be adjusted with the update method.
+ * <p>Note that a user list's status can not be adjusted with the update method.
  */
 public class UpdateUserLists {
-  public static void execute(RealTimeBidding client, Namespace parsedArgs) {
+  public static void execute(RealTimeBidding client, Namespace parsedArgs) throws IOException {
     Integer accountId = parsedArgs.getInt("account_id");
     String userListId = parsedArgs.getString("user_list_id");
     String userListName = String.format("buyers/%s/userLists/%s", accountId, userListId);
@@ -46,34 +46,14 @@ public class UpdateUserLists {
     Date endDate = null;
 
     if (startDateStr != null) {
-      try {
-        startDate = Utils.convertJodaLocalDateToRTBDate(
-            formatter.parseLocalDate(startDateStr));
-      } catch(IllegalArgumentException ex) {
-        System.out.printf("The specified start_date (%s) argument could not be parsed:\n%s",
-            startDateStr, ex);
-        System.exit(1);
-      }
+      startDate = Utils.convertJodaLocalDateToRTBDate(formatter.parseLocalDate(startDateStr));
     }
 
     if (endDateStr != null) {
-      try {
-        endDate = Utils.convertJodaLocalDateToRTBDate(
-            formatter.parseLocalDate(endDateStr));
-      } catch(IllegalArgumentException ex) {
-        System.out.printf("The specified end_date (%s) argument could not be parsed:\n%s",
-            endDateStr, ex);
-        System.exit(1);
-      }
+      endDate = Utils.convertJodaLocalDateToRTBDate(formatter.parseLocalDate(endDateStr));
     }
 
-    UserList origUserList = null;
-    try {
-      origUserList = client.buyers().userLists().get(userListName).execute();
-    } catch(IOException ex) {
-      System.out.printf("RealTimeBidding API returned error response:\n%s", ex);
-      System.exit(1);
-    }
+    UserList origUserList = client.buyers().userLists().get(userListName).execute();
 
     UrlRestriction origUrlRestriction = origUserList.getUrlRestriction();
 
@@ -112,56 +92,75 @@ public class UpdateUserLists {
 
     origUserList.setUrlRestriction(origUrlRestriction);
 
-    UserList updatedUserList = null;
-    try {
-      updatedUserList = client.buyers().userLists().update(userListName, origUserList).execute();
-    } catch(IOException ex) {
-      System.out.printf("RealTimeBidding API returned error response:\n%s", ex);
-      System.exit(1);
-    }
+    UserList updatedUserList =
+        client.buyers().userLists().update(userListName, origUserList).execute();
 
     System.out.printf("Updated UserList for buyer Account ID '%s':\n", accountId);
     Utils.printUserList(updatedUserList);
   }
 
   public static void main(String[] args) {
-    ArgumentParser parser = ArgumentParsers.newFor("CreateUserLists").build()
-        .defaultHelp(true)
-        .description(("Updates the specified user list."));
-    parser.addArgument("-a", "--account_id")
-        .help("The resource ID of the buyers resource under which the user list was created. " +
-            "This will be used to construct the name used as a path parameter for the " +
-            "userlists.update request.")
+    ArgumentParser parser =
+        ArgumentParsers.newFor("CreateUserLists")
+            .build()
+            .defaultHelp(true)
+            .description(("Updates the specified user list."));
+    parser
+        .addArgument("-a", "--account_id")
+        .help(
+            "The resource ID of the buyers resource under which the user list was created. "
+                + "This will be used to construct the name used as a path parameter for the "
+                + "userlists.update request.")
         .required(true)
         .type(Integer.class);
-    parser.addArgument("-u", "--user_list_id")
-        .help("The resource ID of the buyers.userlists resource for which the user list was " +
-            "created. This will be used to construct the name used as a path parameter for the " +
-            "userlists.update request.")
+    parser
+        .addArgument("-u", "--user_list_id")
+        .help(
+            "The resource ID of the buyers.userlists resource for which the user list was created."
+                + " This will be used to construct the name used as a path parameter for the"
+                + " userlists.update request.")
         .required(true)
         .type(Integer.class);
-    parser.addArgument("-n", "--display_name")
+    parser
+        .addArgument("-n", "--display_name")
         .help("The user-specified display name of the user list.");
-    parser.addArgument("-d", "--description")
+    parser
+        .addArgument("-d", "--description")
         .help("The user-specified description of the user list.");
-    parser.addArgument("--url")
+    parser
+        .addArgument("--url")
         .help("The URL to use for applying the UrlRestriction on the user list.");
-    parser.addArgument("-r", "--restriction_type")
-        .help("The restriction type for the specified URL. For more details on how to interpret " +
-            "the different restriction types, see the reference documentation: " +
-            "https://developers.google.com/authorized-buyers/apis/realtimebidding/reference/rest/" +
-            "v1/buyers.userLists#UrlRestriction.FIELDS.restriction_type")
-        .choices("CONTAINS", "EQUALS", "STARTS_WITH", "ENDS_WITH", "DOES_NOT_EQUAL",
-            "DOES_NOT_CONTAIN", "DOES_NOT_START_WITH", "DOES_NOT_END_WITH");
-    parser.addArgument("--start_date")
-        .help("The start date for the URL restriction, specified as an ISO 8601 date " +
-            "(yyyy/mm/dd. By default, this will be set to today.");
-    parser.addArgument("--end_date")
-        .help("The end date for the URL restriction, specified as an ISO 8601 date " +
-            "(yyyy/mm/dd. By default, this will be set to tomorrow.");
-    parser.addArgument("-m", "--membership_duration_days")
-        .help("The number of days a user's cookie stays on the user list. The value must be " +
-            "between 0 and 540 inclusive. This will be set to 30 by default.")
+    parser
+        .addArgument("-r", "--restriction_type")
+        .help(
+            "The restriction type for the specified URL. For more details on how to interpret the"
+                + " different restriction types, see the reference documentation: "
+                + "https://developers.google.com/authorized-buyers/apis/realtimebidding/reference/rest/"
+                + "v1/buyers.userLists#UrlRestriction.FIELDS.restriction_type")
+        .choices(
+            "CONTAINS",
+            "EQUALS",
+            "STARTS_WITH",
+            "ENDS_WITH",
+            "DOES_NOT_EQUAL",
+            "DOES_NOT_CONTAIN",
+            "DOES_NOT_START_WITH",
+            "DOES_NOT_END_WITH");
+    parser
+        .addArgument("--start_date")
+        .help(
+            "The start date for the URL restriction, specified as an ISO 8601 date "
+                + "(yyyy/mm/dd. By default, this will be set to today.");
+    parser
+        .addArgument("--end_date")
+        .help(
+            "The end date for the URL restriction, specified as an ISO 8601 date "
+                + "(yyyy/mm/dd. By default, this will be set to tomorrow.");
+    parser
+        .addArgument("-m", "--membership_duration_days")
+        .help(
+            "The number of days a user's cookie stays on the user list. The value must be "
+                + "between 0 and 540 inclusive. This will be set to 30 by default.")
         .type(Long.class);
 
     Namespace parsedArgs = null;
@@ -184,6 +183,16 @@ public class UpdateUserLists {
       System.exit(1);
     }
 
-    execute(client, parsedArgs);
+    try {
+      execute(client, parsedArgs);
+    } catch (IOException ex) {
+      System.out.printf("RealTimeBidding API returned error response:\n%s", ex);
+      System.exit(1);
+    } catch (IllegalArgumentException ex) {
+      System.out.printf(
+          "The specified start_date (%s) or end_date (%s) arguments could not " + "be parsed:\n%s",
+          parsedArgs.getString("start_date"), parsedArgs.getString("end_date"), ex);
+      System.exit(1);
+    }
   }
 }

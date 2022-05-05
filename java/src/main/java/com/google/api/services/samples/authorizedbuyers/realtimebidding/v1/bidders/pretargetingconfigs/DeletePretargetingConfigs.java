@@ -25,35 +25,35 @@ import net.sourceforge.argparse4j.inf.ArgumentParser;
 import net.sourceforge.argparse4j.inf.ArgumentParserException;
 import net.sourceforge.argparse4j.inf.Namespace;
 
-/**
- * Deletes a pretargeting configuration with a specified name.
- */
+/** Deletes a pretargeting configuration with a specified name. */
 public class DeletePretargetingConfigs {
 
-  public static void execute(RealTimeBidding client, Namespace parsedArgs) {
-    String name = String.format("bidders/%s/pretargetingConfigs/%s",
-        parsedArgs.getInt("account_id"), parsedArgs.getInt("pretargeting_config_id"));
+  public static void execute(RealTimeBidding client, Namespace parsedArgs) throws IOException {
+    String name =
+        String.format(
+            "bidders/%s/pretargetingConfigs/%s",
+            parsedArgs.getInt("account_id"), parsedArgs.getInt("pretargeting_config_id"));
 
-    try {
-      client.bidders().pretargetingConfigs().delete(name).execute();
-    } catch(IOException ex) {
-      System.out.printf("RealTimeBidding API returned error response:\n%s", ex);
-      System.exit(1);
-  }
+    client.bidders().pretargetingConfigs().delete(name).execute();
 
     System.out.printf("Pretargeting configuration with name '%s' deleted successfully.\n", name);
   }
 
   public static void main(String[] args) {
-    ArgumentParser parser = ArgumentParsers.newFor("DeletePretargetingConfigs").build()
-        .defaultHelp(true)
-        .description(("Deletes a specified pretargeting configuration."));
-    parser.addArgument("-a", "--account_id")
-        .help("The resource ID of the bidders resource under which the pretargeting " +
-            "configuration was created.")
+    ArgumentParser parser =
+        ArgumentParsers.newFor("DeletePretargetingConfigs")
+            .build()
+            .defaultHelp(true)
+            .description(("Deletes a specified pretargeting configuration."));
+    parser
+        .addArgument("-a", "--account_id")
+        .help(
+            "The resource ID of the bidders resource under which the pretargeting "
+                + "configuration was created.")
         .required(true)
         .type(Integer.class);
-    parser.addArgument("-p", "--pretargeting_config_id")
+    parser
+        .addArgument("-p", "--pretargeting_config_id")
         .help("The resource ID of the pretargeting configuration that is being deleted.")
         .required(true)
         .type(Integer.class);
@@ -78,6 +78,11 @@ public class DeletePretargetingConfigs {
       System.exit(1);
     }
 
-    execute(client, parsedArgs);
+    try {
+      execute(client, parsedArgs);
+    } catch (IOException ex) {
+      System.out.printf("RealTimeBidding API returned error response:\n%s", ex);
+      System.exit(1);
+    }
   }
 }

@@ -496,6 +496,38 @@ namespace Google.Apis.RealTimeBidding.Examples
         }
 
         /// <summary>
+        /// Print a human-readable representation of a single publisher connection.
+        /// </summary>
+        public static void PrintPublisherConnection(PublisherConnection connection)
+        {
+            Console.WriteLine("* Publisher connection name: {0}", connection.Name);
+
+            string publisherPlatform = connection.PublisherPlatform;
+            if(publisherPlatform != null)
+            {
+                Console.WriteLine("\t- Publisher platform: {0}", publisherPlatform);
+            }
+
+            string displayName = connection.DisplayName;
+            if(displayName != null)
+            {
+                Console.WriteLine("\t- Display name: {0}", displayName);
+            }
+
+            string biddingState = connection.BiddingState;
+            if(biddingState != null)
+            {
+                Console.WriteLine("\t- Bidding state: {0}", biddingState);
+            }
+
+            object createTime = connection.CreateTime;
+            if(createTime != null)
+            {
+                Console.WriteLine("\t- Create time: {0}", createTime.ToString());
+            }
+        }
+
+        /// <summary>
         /// Create a new service for the Google Cloud Pub/Sub API.
         /// </summary>
         /// <returns>A new API Service</returns>

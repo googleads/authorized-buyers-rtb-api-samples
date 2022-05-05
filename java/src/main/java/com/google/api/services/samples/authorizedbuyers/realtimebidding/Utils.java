@@ -14,12 +14,8 @@
 
 package com.google.api.services.samples.authorizedbuyers.realtimebidding;
 
-import com.google.api.client.http.HttpRequestInitializer;
-import com.google.api.services.realtimebidding.v1.model.*;
-import com.google.auth.http.HttpCredentialsAdapter;
-import com.google.auth.oauth2.GoogleCredentials;
-import com.google.auth.oauth2.ServiceAccountCredentials;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpRequestInitializer;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
@@ -27,7 +23,10 @@ import com.google.api.services.pubsub.Pubsub;
 import com.google.api.services.pubsub.PubsubScopes;
 import com.google.api.services.realtimebidding.v1.RealTimeBidding;
 import com.google.api.services.realtimebidding.v1.RealTimeBiddingScopes;
-
+import com.google.api.services.realtimebidding.v1.model.*;
+import com.google.auth.http.HttpCredentialsAdapter;
+import com.google.auth.oauth2.GoogleCredentials;
+import com.google.auth.oauth2.ServiceAccountCredentials;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
@@ -38,9 +37,7 @@ import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
-/**
- * Utilities used by the Authorized Buyers Real-time Bidding API samples.
- */
+/** Utilities used by the Authorized Buyers Real-time Bidding API samples. */
 public class Utils {
   /**
    * Specify the name of your application. If the application name is {@code null} or blank, the
@@ -49,8 +46,7 @@ public class Utils {
   private static final String APPLICATION_NAME = "";
 
   /** Full path to JSON Key file - include file name */
-  private static final java.io.File JSON_FILE =
-      new java.io.File("INSERT_PATH_TO_JSON_FILE");
+  private static final java.io.File JSON_FILE = new java.io.File("INSERT_PATH_TO_JSON_FILE");
 
   /**
    * Global instance of a DateTimeFormatter used to parse LocalDate instances and convert them to
@@ -67,7 +63,8 @@ public class Utils {
    */
   private static final Integer MAXIMUM_PAGE_SIZE = 50;
 
-  /** Authorizes the application to access the user's protected data.
+  /**
+   * Authorizes the application to access the user's protected data.
    *
    * @throws IOException if the {@code JSON_FILE} can not be read.
    * @return An instantiated GoogleCredentials instance.
@@ -79,12 +76,121 @@ public class Utils {
       Set<String> scopes = new HashSet<>(RealTimeBiddingScopes.all());
       scopes.add(PubsubScopes.PUBSUB);
 
-      credentials = ServiceAccountCredentials
-          .fromStream(serviceAccountStream)
-          .createScoped(scopes);
+      credentials = ServiceAccountCredentials.fromStream(serviceAccountStream).createScoped(scopes);
     }
 
     return credentials;
+  }
+
+  /** Helper method to produce an appropriate indent for the given indentLevel. */
+  private static String getIndent(int indentLevel) {
+    StringBuilder builder = new StringBuilder();
+
+    for (int i = 0; i < indentLevel; i++) {
+      builder.append('\t');
+    }
+
+    return builder.toString();
+  }
+
+  /** Helper method to produce a prefix for a printed field. */
+  private static String getPrefix(int indentLevel) {
+    StringBuilder builder = new StringBuilder();
+
+    builder.append(getIndent(indentLevel));
+
+    // Message names will have no indent and be denoted with an asterisk.
+    if (indentLevel == 0) {
+      builder.append("* ");
+    } else {
+      builder.append("- ");
+    }
+
+    return builder.toString();
+  }
+
+  /** Helper method to print a {@code String} field. */
+  private static void printField(String fieldDesc, String field, int indentLevel) {
+    if (field != null) {
+      String prefix = getPrefix(indentLevel);
+
+      System.out.printf("%s%s: %s%n", prefix, fieldDesc, field);
+    }
+  }
+
+  /** Helper method to print an {@code Integer} field. */
+  private static void printField(String fieldDesc, Integer field, int indentLevel) {
+    if (field != null) {
+      String prefix = getPrefix(indentLevel);
+
+      System.out.printf("%s%s: %d%n", prefix, fieldDesc, field);
+    }
+  }
+
+  /** Helper method to print an {@code Long} field. */
+  private static void printField(String fieldDesc, Long field, int indentLevel) {
+    if (field != null) {
+      String prefix = getPrefix(indentLevel);
+
+      System.out.printf("%s%s: %d%n", prefix, fieldDesc, field);
+    }
+  }
+
+  /** Helper method to print an {@code Double} field. */
+  private static void printField(String fieldDesc, Double field, int indentLevel) {
+    if (field != null) {
+      String prefix = getPrefix(indentLevel);
+
+      System.out.printf("%s%s: %f%n", prefix, fieldDesc, field);
+    }
+  }
+
+  /** Helper method to print an {@code Boolean} field. */
+  private static void printField(String fieldDesc, Boolean field, int indentLevel) {
+    if (field != null) {
+      String prefix = getPrefix(indentLevel);
+
+      System.out.printf("%s%s: %b%n", prefix, fieldDesc, field);
+    }
+  }
+
+  /** Helper method to print a {@code List} of {@code String} values. */
+  private static void printStringList(String fieldDesc, List<String> values, int indentLevel) {
+    if (values != null) {
+      String descPrefix = getPrefix(indentLevel);
+      String itemPrefix = getPrefix(++indentLevel);
+      System.out.printf("%s%s:%n", descPrefix, fieldDesc);
+
+      for (String item : values) {
+        System.out.printf("%s%s%n", itemPrefix, item);
+      }
+    }
+  }
+
+  /** Helper method to print a {@code List} of {@code Integer} values. */
+  private static void printIntegerList(String fieldDesc, List<Integer> values, int indentLevel) {
+    if (values != null) {
+      String descPrefix = getPrefix(indentLevel);
+      String itemPrefix = getPrefix(++indentLevel);
+      System.out.printf("%s%s:%n", descPrefix, fieldDesc);
+
+      for (Integer item : values) {
+        System.out.printf("%s%d%n", itemPrefix, item);
+      }
+    }
+  }
+
+  /** Helper method to print a {@code List} of {@code Long} values. */
+  private static void printLongList(String fieldDesc, List<Long> values, int indentLevel) {
+    if (values != null) {
+      String descPrefix = getPrefix(indentLevel);
+      String itemPrefix = getPrefix(++indentLevel);
+      System.out.printf("%s%s:%n", descPrefix, fieldDesc);
+
+      for (Long item : values) {
+        System.out.printf("%s%d%n", itemPrefix, item);
+      }
+    }
   }
 
   /**
@@ -101,7 +207,7 @@ public class Utils {
    * Converts a {@code LocalDate} instance to a corresponding {@code Date} instance.
    *
    * @param date A {code LocalDate} instance to be converted to the {@code Date} type used by the
-   *   Real-time Bidding API client library.
+   *     Real-time Bidding API client library.
    * @return An instantiated {@code Date} instance.
    */
   public static Date convertJodaLocalDateToRTBDate(LocalDate date) {
@@ -130,9 +236,9 @@ public class Utils {
     HttpRequestInitializer requestInitializer = new HttpCredentialsAdapter(credentials);
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
 
-    return new Pubsub.Builder(
-        httpTransport, JSON_FACTORY, requestInitializer)
-        .setApplicationName(APPLICATION_NAME).build();
+    return new Pubsub.Builder(httpTransport, JSON_FACTORY, requestInitializer)
+        .setApplicationName(APPLICATION_NAME)
+        .build();
   }
 
   /**
@@ -140,27 +246,27 @@ public class Utils {
    *
    * @return An Integer representing the default maximum page size for samples with pagination.
    */
-  public static Integer getMaximumPageSize() { return MAXIMUM_PAGE_SIZE; }
+  public static Integer getMaximumPageSize() {
+    return MAXIMUM_PAGE_SIZE;
+  }
 
   /**
    * Performs all necessary setup steps for running requests against the Real-time Bidding API.
    *
    * @return An initialized RealTimeBidding service object.
    */
-  public static RealTimeBidding getRealTimeBiddingClient() throws IOException,
-      GeneralSecurityException {
+  public static RealTimeBidding getRealTimeBiddingClient()
+      throws IOException, GeneralSecurityException {
     GoogleCredentials credentials = authorize();
     HttpRequestInitializer requestInitializer = new HttpCredentialsAdapter(credentials);
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
 
-    return new RealTimeBidding.Builder(
-        httpTransport, JSON_FACTORY, requestInitializer)
-        .setApplicationName(APPLICATION_NAME).build();
+    return new RealTimeBidding.Builder(httpTransport, JSON_FACTORY, requestInitializer)
+        .setApplicationName(APPLICATION_NAME)
+        .build();
   }
 
-  /**
-   * Prints a {@code Bidder} instance in a human-readable format.
-   */
+  /** Prints a {@code Bidder} instance in a human-readable format. */
   public static void printBidder(Bidder bidder) {
     System.out.printf("* Bidder name: %s\n", bidder.getName());
 
@@ -176,7 +282,9 @@ public class Utils {
 
     Boolean bypassNonGuaranteedDealsPretargeting = bidder.getBypassNonguaranteedDealsPretargeting();
     if (bypassNonGuaranteedDealsPretargeting != null) {
-      System.out.printf("\t- Bypass Non-Guaranteed Deals Pretargeting: %s\n", bypassNonGuaranteedDealsPretargeting);
+      System.out.printf(
+          "\t- Bypass Non-Guaranteed Deals Pretargeting: %s\n",
+          bypassNonGuaranteedDealsPretargeting);
     }
 
     String dealsBillingId = bidder.getDealsBillingId();
@@ -185,9 +293,7 @@ public class Utils {
     }
   }
 
-  /**
-   * Prints a {@code Buyer} instance in a human-readable format.
-   */
+  /** Prints a {@code Buyer} instance in a human-readable format. */
   public static void printBuyer(Buyer buyer) {
     System.out.printf("* Buyer name: %s\n", buyer.getName());
 
@@ -220,9 +326,7 @@ public class Utils {
     }
   }
 
-  /**
-   * Prints a {@code Creative} instance in a human-readable format.
-   */
+  /** Prints a {@code Creative} instance in a human-readable format. */
   public static void printCreative(Creative creative) {
     System.out.printf("* Creative name: %s\n", creative.getName());
 
@@ -241,15 +345,20 @@ public class Utils {
     CreativeServingDecision servingDecision = creative.getCreativeServingDecision();
     if (servingDecision != null) {
       System.out.println("\t- Creative serving decision");
-      System.out.printf("\t\t- Deals policy compliance status: %s\n",
+      System.out.printf(
+          "\t\t- Deals policy compliance status: %s\n",
           servingDecision.getDealsPolicyCompliance().getStatus());
-      System.out.printf("\t\t- Network policy compliance status: %s\n",
+      System.out.printf(
+          "\t\t- Network policy compliance status: %s\n",
           servingDecision.getNetworkPolicyCompliance().getStatus());
-      System.out.printf("\t\t- Platform policy compliance status: %s\n",
+      System.out.printf(
+          "\t\t- Platform policy compliance status: %s\n",
           servingDecision.getPlatformPolicyCompliance().getStatus());
-      System.out.printf("\t\t- China policy compliance status: %s\n",
+      System.out.printf(
+          "\t\t- China policy compliance status: %s\n",
           servingDecision.getChinaPolicyCompliance().getStatus());
-      System.out.printf("\t\t- Russia policy compliance status: %s\n",
+      System.out.printf(
+          "\t\t- Russia policy compliance status: %s\n",
           servingDecision.getRussiaPolicyCompliance().getStatus());
     }
 
@@ -346,9 +455,7 @@ public class Utils {
     }
   }
 
-  /**
-   * Prints a {@code Endpoint} instance in a human-readable format.
-   */
+  /** Prints a {@code Endpoint} instance in a human-readable format. */
   public static void printEndpoint(Endpoint endpoint) {
     System.out.printf("* Endpoint name: %s\n", endpoint.getName());
 
@@ -373,9 +480,7 @@ public class Utils {
     }
   }
 
-  /**
-   * Prints a {@code PretargetingConfig} instance in a human-readable format.
-   */
+  /** Prints a {@code PretargetingConfig} instance in a human-readable format. */
   public static void printPretargetingConfig(PretargetingConfig pretargetingConfig) {
     System.out.printf("* Pretargeting configuration name: %s\n", pretargetingConfig.getName());
     System.out.printf("\t- Display name: %s\n", pretargetingConfig.getDisplayName());
@@ -529,8 +634,8 @@ public class Utils {
     if (creativeDimensions != null && !creativeDimensions.isEmpty()) {
       System.out.println("\t- Included creative dimensions:");
       for (CreativeDimensions dimensions : creativeDimensions) {
-        System.out.printf("\t\tHeight: %s; Width: %s\n",
-            dimensions.getHeight(), dimensions.getWidth());
+        System.out.printf(
+            "\t\tHeight: %s; Width: %s\n", dimensions.getHeight(), dimensions.getWidth());
       }
     }
 
@@ -600,41 +705,47 @@ public class Utils {
     }
   }
 
-  /**
-   * Prints a {@code UserList} instance in a human-readable format.
-   */
+  /** Prints a {@code PublisherConnection} instance in a human-readable format. */
+  public static void printPublisherConnection(PublisherConnection publisherConnection) {
+    printField("Publisher connection name", publisherConnection.getName(), 0);
+    printField("Publisher platform", publisherConnection.getPublisherPlatform(), 1);
+    printField("Display name", publisherConnection.getDisplayName(), 1);
+    printField("State", publisherConnection.getBiddingState(), 1);
+    printField("Create time", publisherConnection.getCreateTime(), 1);
+  }
+
+  /** Prints a {@code UserList} instance in a human-readable format. */
   public static void printUserList(UserList userList) {
     System.out.printf("* UserList name: '%s'\n", userList.getName());
 
     String displayName = userList.getDisplayName();
-    if(displayName != null) {
+    if (displayName != null) {
       System.out.printf("\tUserList display name: '%s'\n", displayName);
     }
 
     String description = userList.getDescription();
-    if(description != null) {
+    if (description != null) {
       System.out.printf("\tUserList description: '%s'\n", description);
     }
 
     UrlRestriction urlRestriction = userList.getUrlRestriction();
-    if(urlRestriction != null) {
+    if (urlRestriction != null) {
       System.out.println("\tURL Restriction:");
       System.out.printf("\t\tURL: '%s'\n", urlRestriction.getUrl());
       System.out.printf("\t\tRestriction Type: '%s'\n", urlRestriction.getRestrictionType());
 
       Date startDate = urlRestriction.getStartDate();
-      if(startDate != null) {
+      if (startDate != null) {
         System.out.printf("\t\tStart Date: '%s'\n", convertDateToString(startDate));
       }
 
       Date endDate = urlRestriction.getEndDate();
-      if(endDate != null) {
+      if (endDate != null) {
         System.out.printf("\t\tEnd Date: '%s'\n", convertDateToString(endDate));
       }
     }
 
     System.out.printf("\tUserList status: '%s'\n", userList.getStatus());
-    System.out.printf("\tMembership duration days: %s\n\n",
-        userList.getMembershipDurationDays());
+    System.out.printf("\tMembership duration days: %s\n\n", userList.getMembershipDurationDays());
   }
 }

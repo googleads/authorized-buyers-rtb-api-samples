@@ -17,50 +17,47 @@
 package com.google.api.services.samples.authorizedbuyers.realtimebidding.v1.bidders.pretargetingconfigs;
 
 import com.google.api.services.realtimebidding.v1.RealTimeBidding;
-import com.google.api.services.realtimebidding.v1.model.CreativeDimensions;
-import com.google.api.services.realtimebidding.v1.model.NumericTargetingDimension;
 import com.google.api.services.realtimebidding.v1.model.PretargetingConfig;
 import com.google.api.services.samples.authorizedbuyers.realtimebidding.Utils;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Arrays;
-import java.util.UUID;
 import net.sourceforge.argparse4j.ArgumentParsers;
 import net.sourceforge.argparse4j.inf.ArgumentParser;
 import net.sourceforge.argparse4j.inf.ArgumentParserException;
 import net.sourceforge.argparse4j.inf.Namespace;
 
-/**
- * Gets a single pretargeting configuration with a specified name.
- */
+/** Gets a single pretargeting configuration with a specified name. */
 public class GetPretargetingConfigs {
 
-  public static void execute(RealTimeBidding client, Namespace parsedArgs) {
-    String name = String.format("bidders/%s/pretargetingConfigs/%s",
-        parsedArgs.getInt("account_id"), parsedArgs.getInt("pretargeting_config_id"));
+  public static void execute(RealTimeBidding client, Namespace parsedArgs) throws IOException {
+    String name =
+        String.format(
+            "bidders/%s/pretargetingConfigs/%s",
+            parsedArgs.getInt("account_id"), parsedArgs.getInt("pretargeting_config_id"));
 
     System.out.printf("Retrieving pretargeting configuration with name: %s\n", name);
 
-    PretargetingConfig pretargetingConfig = null;
-    try {
-      pretargetingConfig = client.bidders().pretargetingConfigs().get(name).execute();
-    } catch(IOException ex) {
-      System.out.printf("RealTimeBidding API returned error response:\n%s", ex);
-      System.exit(1);
-  }
+    PretargetingConfig pretargetingConfig =
+        client.bidders().pretargetingConfigs().get(name).execute();
+
     Utils.printPretargetingConfig(pretargetingConfig);
   }
 
   public static void main(String[] args) {
-    ArgumentParser parser = ArgumentParsers.newFor("GetPretargetingConfigs").build()
-        .defaultHelp(true)
-        .description(("Get a specified pretargeting configuration."));
-    parser.addArgument("-a", "--account_id")
-        .help("The resource ID of the bidders resource under which the pretargeting " +
-            "configuration was created.")
+    ArgumentParser parser =
+        ArgumentParsers.newFor("GetPretargetingConfigs")
+            .build()
+            .defaultHelp(true)
+            .description(("Get a specified pretargeting configuration."));
+    parser
+        .addArgument("-a", "--account_id")
+        .help(
+            "The resource ID of the bidders resource under which the pretargeting "
+                + "configuration was created.")
         .required(true)
         .type(Integer.class);
-    parser.addArgument("-p", "--pretargeting_config_id")
+    parser
+        .addArgument("-p", "--pretargeting_config_id")
         .help("The resource ID of the pretargeting configuration that is being retrieved.")
         .required(true)
         .type(Integer.class);
@@ -85,6 +82,11 @@ public class GetPretargetingConfigs {
       System.exit(1);
     }
 
-    execute(client, parsedArgs);
+    try {
+      execute(client, parsedArgs);
+    } catch (IOException ex) {
+      System.out.printf("RealTimeBidding API returned error response:\n%s", ex);
+      System.exit(1);
+    }
   }
 }

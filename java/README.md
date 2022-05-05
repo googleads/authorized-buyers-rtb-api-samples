@@ -10,7 +10,7 @@ Bidding API is available from
 <https://developers.google.com/authorized-buyers/apis/realtimebidding/reference/rest>.
 
 ## Prerequisites
-- [`Java 7+`](http://java.com)
+- [`Java 8+`](http://java.com)
 - [`Maven`](http://maven.apache.org)
 
 ## Announcements and updates

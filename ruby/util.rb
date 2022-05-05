@@ -421,6 +421,27 @@ def print_pretargeting_config(pretargeting_config)
 end
 
 
+def print_publisher_connection(publisher_connection)
+  puts "* Publisher connection name: #{publisher_connection.name}"
+
+  unless publisher_connection.publisher_platform.nil?
+    puts "\t- Publisher platform: #{publisher_connection.publisher_platform}"
+  end
+
+  unless publisher_connection.display_name.nil?
+    puts "\t- Display name: #{publisher_connection.display_name}"
+  end
+
+  unless publisher_connection.bidding_state.nil?
+    puts "\t- Bidding state: #{publisher_connection.bidding_state}"
+  end
+
+  unless publisher_connection.create_time.nil?
+    puts "\t- Create time: #{publisher_connection.create_time}"
+  end
+end
+
+
 # An option to be passed into the example via a command-line argument.
 class Option
 

@@ -29,12 +29,10 @@ import net.sourceforge.argparse4j.inf.ArgumentParser;
 import net.sourceforge.argparse4j.inf.ArgumentParserException;
 import net.sourceforge.argparse4j.inf.Namespace;
 
-/**
- * Creates a creative with video content for the given buyer account ID.
- */
+/** Creates a creative with video content for the given buyer account ID. */
 public class CreateVideoCreatives {
 
-  public static void execute(RealTimeBidding client, Namespace parsedArgs) {
+  public static void execute(RealTimeBidding client, Namespace parsedArgs) throws IOException {
     Integer accountId = parsedArgs.getInt("account_id");
 
     String parentBuyerName = String.format("buyers/%s", accountId);
@@ -47,54 +45,61 @@ public class CreateVideoCreatives {
     newCreative.setCreativeId(parsedArgs.getString("creative_id"));
     newCreative.setDeclaredAttributes(parsedArgs.<String>getList("declared_attributes"));
     newCreative.setDeclaredClickThroughUrls(parsedArgs.<String>getList("declared_click_urls"));
-    newCreative.setDeclaredRestrictedCategories(parsedArgs.<String>getList("declared_restricted_categories"));
+    newCreative.setDeclaredRestrictedCategories(
+        parsedArgs.<String>getList("declared_restricted_categories"));
     newCreative.setDeclaredVendorIds(parsedArgs.<Integer>getList("declared_vendor_ids"));
     newCreative.setVideo(videoContent);
 
-    Creative creative = null;
-    try {
-      creative = client.buyers().creatives().create(parentBuyerName, newCreative).execute();
-    } catch(IOException ex) {
-    System.out.printf("RealTimeBidding API returned error response:\n%s", ex);
-    System.exit(1);
-  }
+    Creative creative = client.buyers().creatives().create(parentBuyerName, newCreative).execute();
 
     System.out.printf("Created creative for buyer Account ID '%s':\n", accountId);
     Utils.printCreative(creative);
   }
 
   public static void main(String[] args) {
-    ArgumentParser parser = ArgumentParsers.newFor("CreateVideoCreatives").build()
-        .defaultHelp(true)
-        .description(("Creates a video creative for the given buyer account ID."));
-    parser.addArgument("-a", "--account_id")
+    ArgumentParser parser =
+        ArgumentParsers.newFor("CreateVideoCreatives")
+            .build()
+            .defaultHelp(true)
+            .description(("Creates a video creative for the given buyer account ID."));
+    parser
+        .addArgument("-a", "--account_id")
         .help("The resource ID of the buyers resource under which the creative is to be created. ")
         .required(true)
         .type(Integer.class);
-    parser.addArgument("--advertiser_name")
+    parser
+        .addArgument("--advertiser_name")
         .help("The name of the company being advertised in the creative.")
         .setDefault("Test");
-    parser.addArgument("-c", "--creative_id")
+    parser
+        .addArgument("-c", "--creative_id")
         .help("The user-specified creative ID. The maximum length of the creative ID is 128 bytes.")
         .setDefault(String.format("Video_Creative_%s", UUID.randomUUID()));
-    parser.addArgument("--declared_attributes")
-        .help("The creative attributes being declared. Specify each attribute separated by a " +
-            "space.")
+    parser
+        .addArgument("--declared_attributes")
+        .help(
+            "The creative attributes being declared. Specify each attribute separated by a "
+                + "space.")
         .nargs("*")
         .setDefault(Collections.singletonList("CREATIVE_TYPE_VAST_VIDEO"));
-    parser.addArgument("--declared_click_urls")
+    parser
+        .addArgument("--declared_click_urls")
         .help("The click-through URLs being declared. Specify each URL separated by a space.")
         .nargs("*")
         .setDefault(Collections.singletonList("http://test.com"));
-    parser.addArgument("--declared_restricted_categories")
-        .help("The restricted categories being declared. Specify each category separated by a " +
-            "space.")
+    parser
+        .addArgument("--declared_restricted_categories")
+        .help(
+            "The restricted categories being declared. Specify each category separated by a "
+                + "space.")
         .nargs("*");
-    parser.addArgument("--declared_vendor_ids")
+    parser
+        .addArgument("--declared_vendor_ids")
         .help("The vendor IDs being declared. Specify each ID separated by a space.")
         .type(Integer.class)
         .nargs("*");
-    parser.addArgument("--video_url")
+    parser
+        .addArgument("--video_url")
         .help("The URL to fetch a video ad.")
         .setDefault("https://video.test.com/ads?id=123456&wprice=%%WINNING_PRICE%%");
 
@@ -118,6 +123,11 @@ public class CreateVideoCreatives {
       System.exit(1);
     }
 
-    execute(client, parsedArgs);
+    try {
+      execute(client, parsedArgs);
+    } catch (IOException ex) {
+      System.out.printf("RealTimeBidding API returned error response:\n%s", ex);
+      System.exit(1);
+    }
   }
 }
