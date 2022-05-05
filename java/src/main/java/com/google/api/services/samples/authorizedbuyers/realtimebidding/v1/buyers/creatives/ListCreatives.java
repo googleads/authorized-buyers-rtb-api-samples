@@ -28,12 +28,10 @@ import net.sourceforge.argparse4j.inf.ArgumentParser;
 import net.sourceforge.argparse4j.inf.ArgumentParserException;
 import net.sourceforge.argparse4j.inf.Namespace;
 
-/**
- * This sample illustrates how to list Creatives for a given buyer account ID.
- */
+/** This sample illustrates how to list Creatives for a given buyer account ID. */
 public class ListCreatives {
 
-  public static void execute(RealTimeBidding client, Namespace parsedArgs) {
+  public static void execute(RealTimeBidding client, Namespace parsedArgs) throws IOException {
     Integer accountId = parsedArgs.getInt("account_id");
     Integer pageSize = parsedArgs.getInt("page_size");
     String parentBuyerName = String.format("buyers/%s", accountId);
@@ -44,24 +42,24 @@ public class ListCreatives {
     do {
       List<Creative> creatives = null;
 
-      try {
-        ListCreativesResponse response = client.buyers().creatives().list(parentBuyerName)
-            .setFilter(parsedArgs.getString("filter"))
-            .setView(parsedArgs.getString("view"))
-            .setPageSize(pageSize)
-            .setPageToken(pageToken)
-            .execute();
+      ListCreativesResponse response =
+          client
+              .buyers()
+              .creatives()
+              .list(parentBuyerName)
+              .setFilter(parsedArgs.getString("filter"))
+              .setView(parsedArgs.getString("view"))
+              .setPageSize(pageSize)
+              .setPageToken(pageToken)
+              .execute();
 
-        creatives = response.getCreatives();
-        pageToken = response.getNextPageToken();
-      } catch(IOException ex) {
-        System.out.printf("RealTimeBidding API returned error response:\n%s", ex);
-        System.exit(1);
-      }
+      creatives = response.getCreatives();
+      pageToken = response.getNextPageToken();
+
       if (creatives == null) {
         System.out.println("No creatives found.");
       } else {
-        for(Creative creative: creatives) {
+        for (Creative creative : creatives) {
           Utils.printCreative(creative);
         }
       }
@@ -69,31 +67,43 @@ public class ListCreatives {
   }
 
   public static void main(String[] args) {
-    ArgumentParser parser = ArgumentParsers.newFor("ListCreatives").build()
-        .defaultHelp(true)
-        .description(("Lists creatives associated with the given buyer account."));
-    parser.addArgument("-a", "--account_id")
-        .help("The resource ID of the buyers resource under which the creatives were created. " +
-            "This will be used to construct the parent used as a path parameter for the " +
-            "creatives.list request.")
+    ArgumentParser parser =
+        ArgumentParsers.newFor("ListCreatives")
+            .build()
+            .defaultHelp(true)
+            .description(("Lists creatives associated with the given buyer account."));
+    parser
+        .addArgument("-a", "--account_id")
+        .help(
+            "The resource ID of the buyers resource under which the creatives were created. "
+                + "This will be used to construct the parent used as a path parameter for the "
+                + "creatives.list request.")
         .required(true)
         .type(Integer.class);
-    parser.addArgument("-p", "--page_size")
-        .help("The resource ID of the buyers resource under which the user lists were created. " +
-            "This will be used to construct the parent used as a path parameter for the " +
-            "userLists.list request.")
+    parser
+        .addArgument("-p", "--page_size")
+        .help(
+            "The resource ID of the buyers resource under which the user lists were created. "
+                + "This will be used to construct the parent used as a path parameter for the "
+                + "userLists.list request.")
         .setDefault(Utils.getMaximumPageSize())
         .type(Integer.class);
-    parser.addArgument("-f", "--filter")
-        .help("Query string to filter creatives. If no filter is specified, all active creatives " +
-            "will be returned. To demonstrate usage, the default behavior of this sample is to " +
-            "filter such that only approved HTML snippet creatives are returned.")
-        .setDefault("creativeServingDecision.networkPolicyCompliance.status=APPROVED " +
-            "AND creativeFormat=HTML");
-    parser.addArgument("-v", "--view")
-        .help("Controls the amount of information included in the response. By default, the " +
-            "creatives.list method only includes creativeServingDecision. This sample configures " +
-            "the view to return the full contents of the creatives by setting this to 'FULL'.")
+    parser
+        .addArgument("-f", "--filter")
+        .help(
+            "Query string to filter creatives. If no filter is specified, all active creatives will"
+                + " be returned. To demonstrate usage, the default behavior of this sample is to"
+                + " filter such that only approved HTML snippet creatives are returned.")
+        .setDefault(
+            "creativeServingDecision.networkPolicyCompliance.status=APPROVED "
+                + "AND creativeFormat=HTML");
+    parser
+        .addArgument("-v", "--view")
+        .help(
+            "Controls the amount of information included in the response. By default, the"
+                + " creatives.list method only includes creativeServingDecision. This sample"
+                + " configures the view to return the full contents of the creatives by setting"
+                + " this to 'FULL'.")
         .choices("FULL", "SERVING_DECISION_ONLY")
         .setDefault("FULL");
 
@@ -117,6 +127,11 @@ public class ListCreatives {
       System.exit(1);
     }
 
-    execute(client, parsedArgs);
+    try {
+      execute(client, parsedArgs);
+    } catch (IOException ex) {
+      System.out.printf("RealTimeBidding API returned error response:\n%s", ex);
+      System.exit(1);
+    }
   }
 }

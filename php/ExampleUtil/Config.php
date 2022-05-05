@@ -134,7 +134,8 @@ class Config
                ],
                'Bidders_Endpoints' => [
                    'GetEndpoints',
-                   'ListEndpoints'
+                   'ListEndpoints',
+                   'PatchEndpoints'
                ],
                'Bidders_PretargetingConfigs' => [
                    'GetPretargetingConfigs',
@@ -150,6 +151,12 @@ class Config
                    'ActivatePretargetingConfigs',
                    'SuspendPretargetingConfigs',
                    'DeletePretargetingConfigs'
+               ],
+               'Bidders_PublisherConnections' => [
+                   'GetPublisherConnections',
+                   'ListPublisherConnections',
+                   'BatchApprovePublisherConnections',
+                   'BatchRejectPublisherConnections',
                ],
                'Buyers' => [
                    'GetBuyers',

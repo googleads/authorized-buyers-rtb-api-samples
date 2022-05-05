@@ -30,29 +30,30 @@ import net.sourceforge.argparse4j.inf.ArgumentParser;
 import net.sourceforge.argparse4j.inf.ArgumentParserException;
 import net.sourceforge.argparse4j.inf.Namespace;
 
-/**
- * Patches a pretargeting configuration with a specified name.
- */
+/** Patches a pretargeting configuration with a specified name. */
 public class PatchPretargetingConfigs {
 
-  public static void execute(RealTimeBidding client, Namespace parsedArgs) {
+  public static void execute(RealTimeBidding client, Namespace parsedArgs) throws IOException {
     Integer accountId = parsedArgs.getInt("account_id");
 
-    String name = String.format("bidders/%s/pretargetingConfigs/%s",
-        accountId, parsedArgs.getInt("pretargeting_config_id"));
-    String updateMask = "displayName,includedFormats,geoTargeting.includedIds," +
-        "includedCreativeDimensions";
+    String name =
+        String.format(
+            "bidders/%s/pretargetingConfigs/%s",
+            accountId, parsedArgs.getInt("pretargeting_config_id"));
+    String updateMask =
+        "displayName,includedFormats,geoTargeting.includedIds," + "includedCreativeDimensions";
 
     NumericTargetingDimension geoTargeting = new NumericTargetingDimension();
-    geoTargeting.setIncludedIds(Arrays.asList(
-        200635L,   // Austin, TX
-        1014448L,  // Boulder, CO
-        1022183L,  // Hoboken, NJ
-        200622L,   // New Orleans, LA
-        1023191L,  // New York, NY
-        9061237L,  // Mountain View, CA
-        1014221L   // San Francisco, CA
-    ));
+    geoTargeting.setIncludedIds(
+        Arrays.asList(
+            200635L, // Austin, TX
+            1014448L, // Boulder, CO
+            1022183L, // Hoboken, NJ
+            200622L, // New Orleans, LA
+            1023191L, // New York, NY
+            9061237L, // Mountain View, CA
+            1014221L // San Francisco, CA
+            ));
 
     CreativeDimensions creativeDimensions1 = new CreativeDimensions();
     creativeDimensions1.setHeight(480L);
@@ -70,36 +71,41 @@ public class PatchPretargetingConfigs {
     body.setGeoTargeting(geoTargeting);
     body.setIncludedCreativeDimensions(Arrays.asList(creativeDimensions1, creativeDimensions2));
 
-    PretargetingConfig pretargetingConfig = null;
-    try {
-      pretargetingConfig = client.bidders().pretargetingConfigs().patch(
-          name, body).setUpdateMask(updateMask).execute();
-    } catch(IOException ex) {
-      System.out.printf("RealTimeBidding API returned error response:\n%s", ex);
-      System.exit(1);
-  }
+    PretargetingConfig pretargetingConfig =
+        client
+            .bidders()
+            .pretargetingConfigs()
+            .patch(name, body)
+            .setUpdateMask(updateMask)
+            .execute();
 
-    System.out.printf("Patched pretargeting configuration with name '%s':\n",
-        name);
+    System.out.printf("Patched pretargeting configuration with name '%s':\n", name);
     Utils.printPretargetingConfig(pretargetingConfig);
   }
 
   public static void main(String[] args) {
-    ArgumentParser parser = ArgumentParsers.newFor("PatchPretargetingConfigs").build()
-        .defaultHelp(true)
-        .description(("Patches a specified pretargeting configuration."));
-    parser.addArgument("-a", "--account_id")
-        .help("The resource ID of the bidders resource under which the pretargeting " +
-            "configuration was created.")
+    ArgumentParser parser =
+        ArgumentParsers.newFor("PatchPretargetingConfigs")
+            .build()
+            .defaultHelp(true)
+            .description(("Patches a specified pretargeting configuration."));
+    parser
+        .addArgument("-a", "--account_id")
+        .help(
+            "The resource ID of the bidders resource under which the pretargeting "
+                + "configuration was created.")
         .required(true)
         .type(Integer.class);
-    parser.addArgument("-p", "--pretargeting_config_id")
+    parser
+        .addArgument("-p", "--pretargeting_config_id")
         .help("The resource ID of the pretargeting configuration to be patched.")
         .required(true)
         .type(Integer.class);
-    parser.addArgument("-d", "--display_name")
-        .help("The display name to associate with the new configuration. Must be unique among " +
-            "all of a bidder's pretargeting configurations.")
+    parser
+        .addArgument("-d", "--display_name")
+        .help(
+            "The display name to associate with the new configuration. Must be unique among "
+                + "all of a bidder's pretargeting configurations.")
         .setDefault(String.format("TEST_PRETARGETING_CONFIG_%s", UUID.randomUUID()));
 
     Namespace parsedArgs = null;
@@ -122,6 +128,11 @@ public class PatchPretargetingConfigs {
       System.exit(1);
     }
 
-    execute(client, parsedArgs);
+    try {
+      execute(client, parsedArgs);
+    } catch (IOException ex) {
+      System.out.printf("RealTimeBidding API returned error response:\n%s", ex);
+      System.exit(1);
+    }
   }
 }

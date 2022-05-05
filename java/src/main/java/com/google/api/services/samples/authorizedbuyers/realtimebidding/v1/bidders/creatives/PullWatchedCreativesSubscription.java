@@ -42,17 +42,17 @@ import net.sourceforge.argparse4j.inf.Namespace;
 /**
  * Pulls creative status updates from a Google Cloud Pub/Sub subscription.
  *
- * Note that messages do not expire until they are acknowledged; set the acknowledged argument to
+ * <p>Note that messages do not expire until they are acknowledged; set the acknowledged argument to
  * True to acknowledge receiving all messages sent in the response.
  *
- * To learn more about Google Cloud Pub/Sub, read the developer documentation:
+ * <p>To learn more about Google Cloud Pub/Sub, read the developer documentation:
  * https://cloud.google.com/pubsub/docs/overview
  * https://cloud.google.com/pubsub/docs/reference/rest/v1/projects.subscriptions/list
  * https://cloud.google.com/pubsub/docs/reference/rest/v1/projects.subscriptions/acknowledge
  */
 public class PullWatchedCreativesSubscription {
 
-  public static void execute(Pubsub client, Namespace parsedArgs) {
+  public static void execute(Pubsub client, Namespace parsedArgs) throws IOException {
     String subscriptionName = parsedArgs.getString("subscription_name");
 
     System.out.printf("Retrieving messages from subscription: '%s'\n", subscriptionName);
@@ -60,16 +60,8 @@ public class PullWatchedCreativesSubscription {
     PullRequest pullRequest = new PullRequest();
     pullRequest.setMaxMessages(parsedArgs.getInt("max_messages"));
 
-    PullResponse response = null;
-
-    try {
-      response = client.projects().subscriptions().pull(subscriptionName, pullRequest).execute();
-
-    } catch(IOException ex) {
-      System.out.printf("Pubsub API returned error response while pulling subscription:\n%s\n",
-          ex);
-      System.exit(1);
-    }
+    PullResponse response =
+        client.projects().subscriptions().pull(subscriptionName, pullRequest).execute();
 
     List<String> ackIds = new ArrayList<>();
     List<ReceivedMessage> receivedMessages = response.getReceivedMessages();
@@ -85,8 +77,10 @@ public class PullWatchedCreativesSubscription {
         String accountId = messageAttributes.get("accountId");
         String creativeId = messageAttributes.get("creativeId");
 
-        System.out.printf("* Creative found for buyer account ID '%s' with creative ID '%s' " +
-            "has been updated with the following creative status:\n", accountId, creativeId);
+        System.out.printf(
+            "* Creative found for buyer account ID '%s' with creative ID '%s' "
+                + "has been updated with the following creative status:\n",
+            accountId, creativeId);
 
         String decodedData = new String(message.decodeData());
         JsonElement jsonElement = JsonParser.parseString(decodedData);
@@ -97,40 +91,44 @@ public class PullWatchedCreativesSubscription {
         AcknowledgeRequest acknowledgeRequest = new AcknowledgeRequest();
         acknowledgeRequest.setAckIds(ackIds);
 
-        System.out.printf("Acknowledging all %d messages pulled from the subscription.",
-            ackIds.size());
+        System.out.printf(
+            "Acknowledging all %d messages pulled from the subscription.", ackIds.size());
 
-        try {
-          client.projects().subscriptions().acknowledge(subscriptionName,
-              acknowledgeRequest).execute();
-        } catch(IOException ex) {
-          System.out.printf("Pubsub API returned error response while acknowledging received " +
-              "messages:\n%s\n", ex);
-          System.exit(1);
-        }
+        client
+            .projects()
+            .subscriptions()
+            .acknowledge(subscriptionName, acknowledgeRequest)
+            .execute();
       }
     }
   }
 
   public static void main(String[] args) {
-    ArgumentParser parser = ArgumentParsers.newFor("PullWatchedCreativesSubscription")
-        .build()
-        .defaultHelp(true)
-        .description(("Pulls creative status changes (if any) from a specified Google Cloud " +
-            "Pub/Sub subscription."));
-    parser.addArgument("-s", "--subscription_name")
-        .help("The Google Cloud Pub/Sub subscription to be pulled. This value would be returned " +
-            "in the response from the bidders.creatives.watch method, and should be provided " +
-            "as-is in the form: " +
-            "\"projects/realtimebidding-pubsub/subscriptions/{subscription_id}\"")
+    ArgumentParser parser =
+        ArgumentParsers.newFor("PullWatchedCreativesSubscription")
+            .build()
+            .defaultHelp(true)
+            .description(
+                ("Pulls creative status changes (if any) from a specified Google Cloud "
+                    + "Pub/Sub subscription."));
+    parser
+        .addArgument("-s", "--subscription_name")
+        .help(
+            "The Google Cloud Pub/Sub subscription to be pulled. This value would be returned "
+                + "in the response from the bidders.creatives.watch method, and should be provided "
+                + "as-is in the form: "
+                + "\"projects/realtimebidding-pubsub/subscriptions/{subscription_id}\"")
         .required(true);
-    parser.addArgument("-m", "--max_messages")
+    parser
+        .addArgument("-m", "--max_messages")
         .help("The maximum number of messages to be returned in a single pull.")
         .type(Integer.class)
         .setDefault(Utils.getMaximumPageSize());
-    parser.addArgument("-a", "--acknowledge")
-        .help("'Whether to acknowledge the messages pulled from the subscription. Acknowledged " +
-            "messages won't appear in subsequent responses to pulls from the subscription.'")
+    parser
+        .addArgument("-a", "--acknowledge")
+        .help(
+            "'Whether to acknowledge the messages pulled from the subscription. Acknowledged "
+                + "messages won't appear in subsequent responses to pulls from the subscription.'")
         .type(Boolean.class)
         .action(storeTrue())
         .setDefault(false);
@@ -155,6 +153,11 @@ public class PullWatchedCreativesSubscription {
       System.exit(1);
     }
 
-    execute(client, parsedArgs);
+    try {
+      execute(client, parsedArgs);
+    } catch (IOException ex) {
+      System.out.printf("PubSub API returned error response:\n%s", ex);
+      System.exit(1);
+    }
   }
 }

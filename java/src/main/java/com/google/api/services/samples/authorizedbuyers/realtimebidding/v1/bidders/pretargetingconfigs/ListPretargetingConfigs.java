@@ -33,7 +33,7 @@ import net.sourceforge.argparse4j.inf.Namespace;
  */
 public class ListPretargetingConfigs {
 
-  public static void execute(RealTimeBidding client, Namespace parsedArgs) {
+  public static void execute(RealTimeBidding client, Namespace parsedArgs) throws IOException {
     Integer accountId = parsedArgs.getInt("account_id");
     Integer pageSize = parsedArgs.getInt("page_size");
     String parentBidderName = String.format("bidders/%s", accountId);
@@ -44,23 +44,22 @@ public class ListPretargetingConfigs {
     do {
       List<PretargetingConfig> pretargetingConfigs = null;
 
-      try {
-        ListPretargetingConfigsResponse response = client.bidders().pretargetingConfigs()
-            .list(parentBidderName)
-            .setPageSize(pageSize)
-            .setPageToken(pageToken)
-            .execute();
+      ListPretargetingConfigsResponse response =
+          client
+              .bidders()
+              .pretargetingConfigs()
+              .list(parentBidderName)
+              .setPageSize(pageSize)
+              .setPageToken(pageToken)
+              .execute();
 
-        pretargetingConfigs = response.getPretargetingConfigs();
-        pageToken = response.getNextPageToken();
-      } catch(IOException ex) {
-        System.out.printf("RealTimeBidding API returned error response:\n%s", ex);
-        System.exit(1);
-      }
+      pretargetingConfigs = response.getPretargetingConfigs();
+      pageToken = response.getNextPageToken();
+
       if (pretargetingConfigs == null) {
         System.out.println("No pretargeting configurations found.");
       } else {
-        for(PretargetingConfig pretargetingConfig: pretargetingConfigs) {
+        for (PretargetingConfig pretargetingConfig : pretargetingConfigs) {
           Utils.printPretargetingConfig(pretargetingConfig);
         }
       }
@@ -68,19 +67,25 @@ public class ListPretargetingConfigs {
   }
 
   public static void main(String[] args) {
-    ArgumentParser parser = ArgumentParsers.newFor("ListPretargetingConfigs").build()
-        .defaultHelp(true)
-        .description(("Lists pretargeting configurations for the given bidder account."));
-    parser.addArgument("-a", "--account_id")
-        .help("The resource ID of the bidders resource under which the pretargeting " +
-            "configurations were created. This will be used to construct the parent used as a " +
-            "path parameter for the pretargetingConfigs.list request.")
+    ArgumentParser parser =
+        ArgumentParsers.newFor("ListPretargetingConfigs")
+            .build()
+            .defaultHelp(true)
+            .description(("Lists pretargeting configurations for the given bidder account."));
+    parser
+        .addArgument("-a", "--account_id")
+        .help(
+            "The resource ID of the bidders resource under which the pretargeting configurations"
+                + " were created. This will be used to construct the parent used as a path"
+                + " parameter for the pretargetingConfigs.list request.")
         .required(true)
         .type(Integer.class);
-    parser.addArgument("-p", "--page_size")
-        .help("The resource ID of the buyers resource under which the user lists were created. " +
-            "This will be used to construct the parent used as a path parameter for the " +
-            "userLists.list request.")
+    parser
+        .addArgument("-p", "--page_size")
+        .help(
+            "The resource ID of the buyers resource under which the user lists were created. "
+                + "This will be used to construct the parent used as a path parameter for the "
+                + "userLists.list request.")
         .setDefault(Utils.getMaximumPageSize())
         .type(Integer.class);
 
@@ -104,6 +109,11 @@ public class ListPretargetingConfigs {
       System.exit(1);
     }
 
-    execute(client, parsedArgs);
+    try {
+      execute(client, parsedArgs);
+    } catch (IOException ex) {
+      System.out.printf("RealTimeBidding API returned error response:\n%s", ex);
+      System.exit(1);
+    }
   }
 }

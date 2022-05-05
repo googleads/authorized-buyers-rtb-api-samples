@@ -30,48 +30,58 @@ import net.sourceforge.argparse4j.inf.Namespace;
 /**
  * Removes site URLs from pretargeting configuration's web targeting.
  *
- * Note that this is the only way to remove targeted URLs following a pretargeting
+ * <p>Note that this is the only way to remove targeted URLs following a pretargeting
  * configuration's creation.
  */
 public class RemoveTargetedSites {
 
-  public static void execute(RealTimeBidding client, Namespace parsedArgs) {
-    String pretargetingConfigName = String.format("bidders/%s/pretargetingConfigs/%s",
-        parsedArgs.getInt("account_id"), parsedArgs.getInt("pretargeting_config_id"));
+  public static void execute(RealTimeBidding client, Namespace parsedArgs) throws IOException {
+    String pretargetingConfigName =
+        String.format(
+            "bidders/%s/pretargetingConfigs/%s",
+            parsedArgs.getInt("account_id"), parsedArgs.getInt("pretargeting_config_id"));
 
     RemoveTargetedSitesRequest body = new RemoveTargetedSitesRequest();
     body.setSites(parsedArgs.<String>getList("web_targeting_urls"));
 
-    System.out.printf("Removing site URLs from web targeting for pretargeting configuration with " +
-        "name: '%s'\n", pretargetingConfigName);
+    System.out.printf(
+        "Removing site URLs from web targeting for pretargeting configuration with "
+            + "name: '%s'\n",
+        pretargetingConfigName);
 
-    PretargetingConfig pretargetingConfig = null;
-    try {
-      pretargetingConfig = client.bidders().pretargetingConfigs().removeTargetedSites(
-          pretargetingConfigName, body).execute();
-    } catch(IOException ex) {
-      System.out.printf("RealTimeBidding API returned error response:\n%s", ex);
-      System.exit(1);
-  }
+    PretargetingConfig pretargetingConfig =
+        client
+            .bidders()
+            .pretargetingConfigs()
+            .removeTargetedSites(pretargetingConfigName, body)
+            .execute();
+
     Utils.printPretargetingConfig(pretargetingConfig);
   }
 
   public static void main(String[] args) {
-    ArgumentParser parser = ArgumentParsers.newFor("RemoveTargetedSites").build()
-        .defaultHelp(true)
-        .description(("Removes site URLs from pretargeting configuration's web targeting."));
-    parser.addArgument("-a", "--account_id")
-        .help("The resource ID of the bidders resource under which the pretargeting " +
-            "configuration was created.")
+    ArgumentParser parser =
+        ArgumentParsers.newFor("RemoveTargetedSites")
+            .build()
+            .defaultHelp(true)
+            .description(("Removes site URLs from pretargeting configuration's web targeting."));
+    parser
+        .addArgument("-a", "--account_id")
+        .help(
+            "The resource ID of the bidders resource under which the pretargeting "
+                + "configuration was created.")
         .required(true)
         .type(Integer.class);
-    parser.addArgument("-p", "--pretargeting_config_id")
+    parser
+        .addArgument("-p", "--pretargeting_config_id")
         .help("The resource ID of the pretargeting configuration that is being acted upon.")
         .required(true)
         .type(Integer.class);
-    parser.addArgument("--web_targeting_urls")
-        .help("The URLs to be removed from this configuration's web targeting. Specify each " +
-            "value separated by a space. Values specified must be valid URLs.")
+    parser
+        .addArgument("--web_targeting_urls")
+        .help(
+            "The URLs to be removed from this configuration's web targeting. Specify each "
+                + "value separated by a space. Values specified must be valid URLs.")
         .required(true)
         .type(String.class)
         .nargs("*");
@@ -96,6 +106,11 @@ public class RemoveTargetedSites {
       System.exit(1);
     }
 
-    execute(client, parsedArgs);
+    try {
+      execute(client, parsedArgs);
+    } catch (IOException ex) {
+      System.out.printf("RealTimeBidding API returned error response:\n%s", ex);
+      System.exit(1);
+    }
   }
 }

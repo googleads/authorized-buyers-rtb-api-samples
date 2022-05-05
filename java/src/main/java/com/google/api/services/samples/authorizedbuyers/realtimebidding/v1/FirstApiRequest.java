@@ -16,7 +16,6 @@
 
 package com.google.api.services.samples.authorizedbuyers.realtimebidding.v1;
 
-import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpRequestInitializer;
 import com.google.api.client.http.HttpTransport;
@@ -28,7 +27,6 @@ import com.google.api.services.realtimebidding.v1.model.Creative;
 import com.google.auth.http.HttpCredentialsAdapter;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.auth.oauth2.ServiceAccountCredentials;
-
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.HashSet;
@@ -36,21 +34,19 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * A sample application that authenticates and runs a request against the
- * Authorized Buyers Real-time Bidding API.
+ * A sample application that authenticates and runs a request against the Authorized Buyers
+ * Real-time Bidding API.
  */
 public class FirstApiRequest {
 
   /**
-   * Be sure to specify the name of your application. If the application name is
-   * {@code null} or blank, the application will log a warning. Suggested format
-   * is "MyCompany-ProductName/1.0".
+   * Be sure to specify the name of your application. If the application name is {@code null} or
+   * blank, the application will log a warning. Suggested format is "MyCompany-ProductName/1.0".
    */
   private static final String APPLICATION_NAME = "APPLICATION_NAME_HERE";
 
   // Full path to JSON Key file - include file name.
-  private static final java.io.File JSON_FILE =
-      new java.io.File("INSERT_PATH_TO_JSON_FILE");
+  private static final java.io.File JSON_FILE = new java.io.File("INSERT_PATH_TO_JSON_FILE");
 
   // Name of the buyer resource for which the API call is being made.
   private static final String BUYER_NAME = "INSERT_BUYER_RESOURCE_NAME";
@@ -59,9 +55,7 @@ public class FirstApiRequest {
   private static HttpTransport httpTransport;
 
   // Global instance of the JSON factory.
-  private static final JsonFactory jsonFactory =
-      JacksonFactory.getDefaultInstance();
-
+  private static final JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
   public static void main(String[] args) throws Exception {
     // Create credentials using the JSON key file.
@@ -69,10 +63,8 @@ public class FirstApiRequest {
 
     try (FileInputStream serviceAccountStream = new FileInputStream((JSON_FILE))) {
       Set<String> scopes = new HashSet<>(RealTimeBiddingScopes.all());
-      credentials = ServiceAccountCredentials
-          .fromStream(serviceAccountStream)
-          .createScoped(scopes);
-    } catch(IOException ex) {
+      credentials = ServiceAccountCredentials.fromStream(serviceAccountStream).createScoped(scopes);
+    } catch (IOException ex) {
       System.out.println("Can't complete authorization step. Did you specify a JSON key file?");
       System.out.println(ex);
       System.exit(1);
@@ -82,15 +74,20 @@ public class FirstApiRequest {
     httpTransport = GoogleNetHttpTransport.newTrustedTransport();
 
     // Use the credentials to create a client for the API service.
-    RealTimeBidding realtimeBidding = new RealTimeBidding.Builder(httpTransport,
-        jsonFactory, requestInitializer).setApplicationName(APPLICATION_NAME)
-        .build();
+    RealTimeBidding realtimeBidding =
+        new RealTimeBidding.Builder(httpTransport, jsonFactory, requestInitializer)
+            .setApplicationName(APPLICATION_NAME)
+            .build();
 
     // Call the buyers.creatives.list method to get a list of creatives for the given buyer.
-    List<Creative> creatives = realtimeBidding.buyers().creatives()
-        .list(BUYER_NAME)
-        .setView("FULL")
-        .execute().getCreatives();
+    List<Creative> creatives =
+        realtimeBidding
+            .buyers()
+            .creatives()
+            .list(BUYER_NAME)
+            .setView("FULL")
+            .execute()
+            .getCreatives();
 
     if (creatives != null && creatives.size() > 0) {
       System.out.printf("Listing of creatives associated with buyer '%s'%n", BUYER_NAME);
@@ -98,9 +95,8 @@ public class FirstApiRequest {
         System.out.printf("* Creative name: %s\n", creative.getName());
       }
     } else {
-      System.out.printf("No creatives were found that were associated with buyer '%s'%n.",
-          BUYER_NAME);
+      System.out.printf(
+          "No creatives were found that were associated with buyer '%s'%n.", BUYER_NAME);
     }
   }
 }
-

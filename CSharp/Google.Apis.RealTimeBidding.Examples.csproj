@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <!-- build properties -->
   <PropertyGroup>
-    <TargetFrameworks>netcoreapp3.0;</TargetFrameworks>
+    <TargetFrameworks>netcoreapp5.0;</TargetFrameworks>
     <OutputType>Exe</OutputType>
     <AssemblyName>Google.Apis.RealTimeBidding.Examples</AssemblyName>
     <RootNamespace>Google.Apis.RealTimeBidding.Examples</RootNamespace>
@@ -20,20 +20,20 @@
     <!--<StartupObject>Google.Apis.RealTimeBidding.Examples.v1.FirstApiRequest</StartupObject>-->
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Google.Apis" Version="1.50.0" />
-    <PackageReference Include="Google.Apis.Auth" Version="1.50.0" />
-    <PackageReference Include="Google.Apis.Core" Version="1.50.0" />
-    <PackageReference Include="Google.Apis.Oauth2.v2" Version="1.50.0.1869" />
-    <PackageReference Include="Google.Apis.PubSub.v1" Version="1.50.0.2252" />
-    <PackageReference Include="Google.Apis.RealTimeBidding.v1" Version="1.50.0.2261" />
-    <PackageReference Include="log4net" Version="2.0.12" />
+    <PackageReference Include="Google.Apis" Version="1.57.0" />
+    <PackageReference Include="Google.Apis.Auth" Version="1.57.0" />
+    <PackageReference Include="Google.Apis.Core" Version="1.57.0" />
+    <PackageReference Include="Google.Apis.Oauth2.v2" Version="1.57.0.1869" />
+    <PackageReference Include="Google.Apis.Pubsub.v1" Version="1.57.0.2667" />
+    <PackageReference Condition="!Exists('./Google.Apis.RealTimeBidding.v1.csproj')" Include="Google.Apis.RealTimeBidding.v1" Version="1.57.0.2680" />
+    <PackageReference Include="log4net" Version="2.0.13" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="3.1.4" />
     <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Mono.Options" Version="6.6.0.161" />
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="Mono.Options" Version="6.12.0.148" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
   </ItemGroup>
   <ItemGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="4.7.0" />

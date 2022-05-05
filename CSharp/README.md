@@ -9,7 +9,7 @@ Real-time Bidding API, see the [documentation](https://developers.google.com/aut
 
 ## Features
 
-- Support for .NET Core 3.0 and above.
+- Support for .NET Core 5.0 and above.
 
 ## Announcements and updates
 
@@ -74,14 +74,14 @@ You can run examples by navigating to the **CSharp** directory and running a
 command such as the following on the command-line:
 
 ```
-dotnet run --framework netcoreapp3.0 -- --example path.to.Example [--ex_arg1 ...]
+dotnet run --framework netcoreapp5.0 -- --example path.to.Example [--ex_arg1 ...]
 ```
 
 For example, you can run an example that lists a buyer account's creatives with
 a command such as the following:
 
 ```
-dotnet run --framework netcoreapp3.0 -- --example v1.Buyers.Creatives.ListCreatives --account_id <ACCOUNT_ID>
+dotnet run --framework netcoreapp5.0 -- --example v1.Buyers.Creatives.ListCreatives --account_id <ACCOUNT_ID>
 ```
 
 **Note:** If you are unsure of the arguments for a given example, run it while

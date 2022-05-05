@@ -30,59 +30,72 @@ import net.sourceforge.argparse4j.inf.Namespace;
 /**
  * Adds publisher IDs to a pretargeting configuration's publisher targeting.
  *
- * Note that this is the only way to append publisher IDs following a pretargeting configuration's
- * creation. If a pretargeting configuration already targets publisher IDs, you must specify a
- * targeting mode that is identical to the existing targeting mode.
+ * <p>Note that this is the only way to append publisher IDs following a pretargeting
+ * configuration's creation. If a pretargeting configuration already targets publisher IDs, you must
+ * specify a targeting mode that is identical to the existing targeting mode.
  */
 public class AddTargetedPublishers {
 
-  public static void execute(RealTimeBidding client, Namespace parsedArgs) {
-    String pretargetingConfigName = String.format("bidders/%s/pretargetingConfigs/%s",
-        parsedArgs.getInt("account_id"), parsedArgs.getInt("pretargeting_config_id"));
+  public static void execute(RealTimeBidding client, Namespace parsedArgs) throws IOException {
+    String pretargetingConfigName =
+        String.format(
+            "bidders/%s/pretargetingConfigs/%s",
+            parsedArgs.getInt("account_id"), parsedArgs.getInt("pretargeting_config_id"));
 
     AddTargetedPublishersRequest body = new AddTargetedPublishersRequest();
     body.setTargetingMode(parsedArgs.getString("publisher_targeting_mode"));
     body.setPublisherIds(parsedArgs.<String>getList("publisher_ids"));
 
-    System.out.printf("Updating publisher targeting with new publisher IDs for pretargeting " +
-        "configuration with name: '%s'\n", pretargetingConfigName);
+    System.out.printf(
+        "Updating publisher targeting with new publisher IDs for pretargeting "
+            + "configuration with name: '%s'\n",
+        pretargetingConfigName);
 
-    PretargetingConfig pretargetingConfig = null;
-    try {
-      pretargetingConfig = client.bidders().pretargetingConfigs().addTargetedPublishers(
-          pretargetingConfigName, body).execute();
-    } catch(IOException ex) {
-      System.out.printf("RealTimeBidding API returned error response:\n%s", ex);
-      System.exit(1);
-  }
+    PretargetingConfig pretargetingConfig =
+        client
+            .bidders()
+            .pretargetingConfigs()
+            .addTargetedPublishers(pretargetingConfigName, body)
+            .execute();
+
     Utils.printPretargetingConfig(pretargetingConfig);
   }
 
   public static void main(String[] args) {
-    ArgumentParser parser = ArgumentParsers.newFor("AddTargetedPublishers").build()
-        .defaultHelp(true)
-        .description(("Adds publisher IDs to a pretargeting configuration's publisher targeting."));
-    parser.addArgument("-a", "--account_id")
-        .help("The resource ID of the bidders resource under which the pretargeting " +
-            "configuration was created.")
+    ArgumentParser parser =
+        ArgumentParsers.newFor("AddTargetedPublishers")
+            .build()
+            .defaultHelp(true)
+            .description(
+                ("Adds publisher IDs to a pretargeting configuration's publisher targeting."));
+    parser
+        .addArgument("-a", "--account_id")
+        .help(
+            "The resource ID of the bidders resource under which the pretargeting "
+                + "configuration was created.")
         .required(true)
         .type(Integer.class);
-    parser.addArgument("-p", "--pretargeting_config_id")
+    parser
+        .addArgument("-p", "--pretargeting_config_id")
         .help("The resource ID of the pretargeting configuration that is being acted upon.")
         .required(true)
         .type(Integer.class);
-    parser.addArgument("--publisher_targeting_mode")
-        .help("The targeting mode for the configuration's publisher targeting. Valid values " +
-            "include: INCLUSIVE, and EXCLUSIVE. Note that if the configuration already targets " +
-            "publisher Ids, you must specify an identical targeting mode.")
+    parser
+        .addArgument("--publisher_targeting_mode")
+        .help(
+            "The targeting mode for the configuration's publisher targeting. Valid values include:"
+                + " INCLUSIVE, and EXCLUSIVE. Note that if the configuration already targets"
+                + " publisher Ids, you must specify an identical targeting mode.")
         .required(true)
         .type(String.class);
-    parser.addArgument("--publisher_ids")
-        .help("The publisher IDs specified for this configuration's publisher targeting, which " +
-            "allows one to target a subset of publisher inventory. Specify each ID separated by " +
-            "a space. Valid publisher IDs can be found in Real-time Bidding bid requests, or " +
-            "alternatively in ads.txt / app-ads.txt. For more information, see: " +
-            "https://iabtechlab.com/ads-txt/")
+    parser
+        .addArgument("--publisher_ids")
+        .help(
+            "The publisher IDs specified for this configuration's publisher targeting, which allows"
+                + " one to target a subset of publisher inventory. Specify each ID separated by a"
+                + " space. Valid publisher IDs can be found in Real-time Bidding bid requests, or"
+                + " alternatively in ads.txt / app-ads.txt. For more information, see: "
+                + "https://iabtechlab.com/ads-txt/")
         .required(true)
         .type(String.class)
         .nargs("*");
@@ -107,6 +120,11 @@ public class AddTargetedPublishers {
       System.exit(1);
     }
 
-    execute(client, parsedArgs);
+    try {
+      execute(client, parsedArgs);
+    } catch (IOException ex) {
+      System.out.printf("RealTimeBidding API returned error response:\n%s", ex);
+      System.exit(1);
+    }
   }
 }

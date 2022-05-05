@@ -30,51 +30,62 @@ import net.sourceforge.argparse4j.inf.Namespace;
 /**
  * Removes publisher IDs from a pretargeting configuration's publisher targeting.
  *
- * Note that this is the only way to remove publisher IDs following a pretargeting configuration's
- * creation.
+ * <p>Note that this is the only way to remove publisher IDs following a pretargeting
+ * configuration's creation.
  */
 public class RemoveTargetedPublishers {
 
-  public static void execute(RealTimeBidding client, Namespace parsedArgs) {
-    String pretargetingConfigName = String.format("bidders/%s/pretargetingConfigs/%s",
-        parsedArgs.getInt("account_id"), parsedArgs.getInt("pretargeting_config_id"));
+  public static void execute(RealTimeBidding client, Namespace parsedArgs) throws IOException {
+    String pretargetingConfigName =
+        String.format(
+            "bidders/%s/pretargetingConfigs/%s",
+            parsedArgs.getInt("account_id"), parsedArgs.getInt("pretargeting_config_id"));
 
     RemoveTargetedPublishersRequest body = new RemoveTargetedPublishersRequest();
     body.setPublisherIds(parsedArgs.<String>getList("publisher_ids"));
 
-    System.out.printf("Removing publisher IDs from publisher targeting for pretargeting " +
-        "configuration with name: '%s'\n", pretargetingConfigName);
+    System.out.printf(
+        "Removing publisher IDs from publisher targeting for pretargeting "
+            + "configuration with name: '%s'\n",
+        pretargetingConfigName);
 
-    PretargetingConfig pretargetingConfig = null;
-    try {
-      pretargetingConfig = client.bidders().pretargetingConfigs().removeTargetedPublishers(
-          pretargetingConfigName, body).execute();
-    } catch(IOException ex) {
-      System.out.printf("RealTimeBidding API returned error response:\n%s", ex);
-      System.exit(1);
-  }
+    PretargetingConfig pretargetingConfig =
+        client
+            .bidders()
+            .pretargetingConfigs()
+            .removeTargetedPublishers(pretargetingConfigName, body)
+            .execute();
+
     Utils.printPretargetingConfig(pretargetingConfig);
   }
 
   public static void main(String[] args) {
-    ArgumentParser parser = ArgumentParsers.newFor("RemoveTargetedPublishers").build()
-        .defaultHelp(true)
-        .description(("Removes publisher IDs from a pretargeting configuration's publisher " +
-            "targeting."));
-    parser.addArgument("-a", "--account_id")
-        .help("The resource ID of the bidders resource under which the pretargeting " +
-            "configuration was created.")
+    ArgumentParser parser =
+        ArgumentParsers.newFor("RemoveTargetedPublishers")
+            .build()
+            .defaultHelp(true)
+            .description(
+                ("Removes publisher IDs from a pretargeting configuration's publisher "
+                    + "targeting."));
+    parser
+        .addArgument("-a", "--account_id")
+        .help(
+            "The resource ID of the bidders resource under which the pretargeting "
+                + "configuration was created.")
         .required(true)
         .type(Integer.class);
-    parser.addArgument("-p", "--pretargeting_config_id")
+    parser
+        .addArgument("-p", "--pretargeting_config_id")
         .help("The resource ID of the pretargeting configuration that is being acted upon.")
         .required(true)
         .type(Integer.class);
-    parser.addArgument("--publisher_ids")
-        .help("The publisher IDs to be removed from this configuration's publisher targeting. " +
-            "Specify each ID separated by  space. Valid publisher IDs can be found in Real-time " +
-            "Bidding bid requests, or alternatively in ads.txt / app-ads.txt. For more " +
-            "information, see: https://iabtechlab.com/ads-txt/")
+    parser
+        .addArgument("--publisher_ids")
+        .help(
+            "The publisher IDs to be removed from this configuration's publisher targeting. Specify"
+                + " each ID separated by  space. Valid publisher IDs can be found in Real-time"
+                + " Bidding bid requests, or alternatively in ads.txt / app-ads.txt. For more"
+                + " information, see: https://iabtechlab.com/ads-txt/")
         .required(true)
         .type(String.class)
         .nargs("*");
@@ -99,6 +110,11 @@ public class RemoveTargetedPublishers {
       System.exit(1);
     }
 
-    execute(client, parsedArgs);
+    try {
+      execute(client, parsedArgs);
+    } catch (IOException ex) {
+      System.out.printf("RealTimeBidding API returned error response:\n%s", ex);
+      System.exit(1);
+    }
   }
 }
