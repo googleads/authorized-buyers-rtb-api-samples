@@ -32,8 +32,8 @@ import net.sourceforge.argparse4j.inf.Namespace;
 public class GetEndpoints {
 
   public static void execute(RealTimeBidding client, Namespace parsedArgs) throws IOException {
-    Integer accountId = parsedArgs.getInt("account_id");
-    Integer endpointId = parsedArgs.getInt("endpoint_id");
+    Long accountId = parsedArgs.getLong("account_id");
+    Long endpointId = parsedArgs.getLong("endpoint_id");
     String name = String.format("bidders/%s/endpoints/%s", accountId, endpointId);
 
     Endpoint endpoint = client.bidders().endpoints().get(name).execute();
@@ -56,14 +56,14 @@ public class GetEndpoints {
                 + " used to construct the name used as a path parameter for the endpoints.get "
                 + "request.")
         .required(true)
-        .type(Integer.class);
+        .type(Long.class);
     parser
         .addArgument("-e", "--endpoint_id")
         .help(
             "The resource ID of the endpoints resource that is being retrieved. This will be used"
                 + " to construct the name used as a path parameter for the endpoints.get request.")
         .required(true)
-        .type(Integer.class);
+        .type(Long.class);
 
     Namespace parsedArgs = null;
     try {

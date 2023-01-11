@@ -36,7 +36,7 @@ import net.sourceforge.argparse4j.inf.Namespace;
 public class CreatePretargetingConfigs {
 
   public static void execute(RealTimeBidding client, Namespace parsedArgs) throws IOException {
-    Integer accountId = parsedArgs.getInt("account_id");
+    Long accountId = parsedArgs.getLong("account_id");
 
     String parentBidderName = String.format("bidders/%s", accountId);
 
@@ -128,7 +128,7 @@ public class CreatePretargetingConfigs {
             "The resource ID of the bidders resource under which the pretargeting "
                 + "configuration is to be created.")
         .required(true)
-        .type(Integer.class);
+        .type(Long.class);
     parser
         .addArgument("-d", "--display_name")
         .help(

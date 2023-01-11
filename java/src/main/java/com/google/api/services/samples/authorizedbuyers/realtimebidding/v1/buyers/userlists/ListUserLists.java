@@ -31,7 +31,7 @@ import net.sourceforge.argparse4j.inf.Namespace;
 public class ListUserLists {
 
   public static void execute(RealTimeBidding client, Namespace parsedArgs) throws IOException {
-    Integer accountId = parsedArgs.getInt("account_id");
+    Long accountId = parsedArgs.getLong("account_id");
     Integer pageSize = parsedArgs.getInt("page_size");
 
     String parentBuyerName = String.format("buyers/%s", accountId);
@@ -64,7 +64,7 @@ public class ListUserLists {
                 + "This will be used to construct the parent used as a path parameter for the "
                 + "userLists.list request.")
         .required(true)
-        .type(Integer.class);
+        .type(Long.class);
     parser
         .addArgument("-p", "--page_size")
         .help(

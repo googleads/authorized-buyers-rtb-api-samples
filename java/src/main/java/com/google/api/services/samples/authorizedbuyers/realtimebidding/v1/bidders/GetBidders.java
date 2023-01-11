@@ -35,7 +35,7 @@ import net.sourceforge.argparse4j.inf.Namespace;
 public class GetBidders {
 
   public static void execute(RealTimeBidding client, Namespace parsedArgs) throws IOException {
-    Integer accountId = parsedArgs.getInt("account_id");
+    Long accountId = parsedArgs.getLong("account_id");
     String name = String.format("bidders/%s", accountId);
 
     Bidder bidder = client.bidders().get(name).execute();
@@ -56,7 +56,7 @@ public class GetBidders {
             "The resource ID of the bidders resource that is being retrieved. This will be used to"
                 + " construct the name used as a path parameter for the bidders.get request.")
         .required(true)
-        .type(Integer.class);
+        .type(Long.class);
 
     Namespace parsedArgs = null;
     try {

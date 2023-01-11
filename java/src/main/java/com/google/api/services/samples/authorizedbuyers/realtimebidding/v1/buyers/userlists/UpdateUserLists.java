@@ -36,7 +36,7 @@ import org.joda.time.format.DateTimeFormatter;
  */
 public class UpdateUserLists {
   public static void execute(RealTimeBidding client, Namespace parsedArgs) throws IOException {
-    Integer accountId = parsedArgs.getInt("account_id");
+    Long accountId = parsedArgs.getLong("account_id");
     String userListId = parsedArgs.getString("user_list_id");
     String userListName = String.format("buyers/%s/userLists/%s", accountId, userListId);
     DateTimeFormatter formatter = Utils.getDateTimeFormatterForLocalDate();
@@ -112,7 +112,7 @@ public class UpdateUserLists {
                 + "This will be used to construct the name used as a path parameter for the "
                 + "userlists.update request.")
         .required(true)
-        .type(Integer.class);
+        .type(Long.class);
     parser
         .addArgument("-u", "--user_list_id")
         .help(

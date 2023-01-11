@@ -37,7 +37,7 @@ import net.sourceforge.argparse4j.inf.Namespace;
 public class ListCreatives {
 
   public static void execute(RealTimeBidding client, Namespace parsedArgs) throws IOException {
-    Integer accountId = parsedArgs.getInt("account_id");
+    Long accountId = parsedArgs.getLong("account_id");
     Integer pageSize = parsedArgs.getInt("page_size");
     String parentBuyerName = String.format("bidders/%s", accountId);
     String pageToken = null;
@@ -84,7 +84,7 @@ public class ListCreatives {
                 + " buyers. This will be used to construct the parent used as a path parameter for"
                 + " the creatives.list request.")
         .required(true)
-        .type(Integer.class);
+        .type(Long.class);
     parser
         .addArgument("-p", "--page_size")
         .help(

@@ -37,7 +37,7 @@ import net.sourceforge.argparse4j.inf.Namespace;
 public class ListPublisherConnections {
 
   public static void execute(RealTimeBidding client, Namespace parsedArgs) throws IOException {
-    String parent = String.format("bidders/%d", parsedArgs.getInt("account_id"));
+    String parent = String.format("bidders/%d", parsedArgs.getLong("account_id"));
     Integer pageSize = parsedArgs.getInt("page_size");
     String pageToken = null;
 
@@ -79,7 +79,7 @@ public class ListPublisherConnections {
             "The number of rows to return per page. The server may return fewer rows than "
                 + "specified.")
         .required(true)
-        .type(Integer.class);
+        .type(Long.class);
     parser
         .addArgument("-f", "--filter")
         .help(

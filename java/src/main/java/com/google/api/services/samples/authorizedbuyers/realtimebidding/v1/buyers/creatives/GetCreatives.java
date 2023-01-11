@@ -33,7 +33,7 @@ import net.sourceforge.argparse4j.inf.Namespace;
 public class GetCreatives {
 
   public static void execute(RealTimeBidding client, Namespace parsedArgs) throws IOException {
-    Integer accountId = parsedArgs.getInt("account_id");
+    Long accountId = parsedArgs.getLong("account_id");
     String creativeId = parsedArgs.getString("creative_id");
     String name = String.format("buyers/%s/creatives/%s", accountId, creativeId);
 
@@ -58,7 +58,7 @@ public class GetCreatives {
                 + "This will be used to construct the parent used as a path parameter for the "
                 + "creatives.list request.")
         .required(true)
-        .type(Integer.class);
+        .type(Long.class);
     parser
         .addArgument("-c", "--creative_id")
         .help(

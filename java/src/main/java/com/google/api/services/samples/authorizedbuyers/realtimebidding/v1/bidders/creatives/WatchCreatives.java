@@ -39,7 +39,7 @@ import net.sourceforge.argparse4j.inf.Namespace;
 public class WatchCreatives {
 
   public static void execute(RealTimeBidding client, Namespace parsedArgs) throws IOException {
-    Integer accountId = parsedArgs.getInt("account_id");
+    Long accountId = parsedArgs.getLong("account_id");
     String parentBidderName = String.format("bidders/%s", accountId);
 
     WatchCreativesResponse response =
@@ -63,7 +63,7 @@ public class WatchCreatives {
             "The resource ID of a bidder account. This will be used to construct the parent "
                 + "used as a path parameter for the creatives.watch request.")
         .required(true)
-        .type(Integer.class);
+        .type(Long.class);
 
     Namespace parsedArgs = null;
     try {

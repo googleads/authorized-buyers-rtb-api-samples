@@ -40,7 +40,7 @@ public class AddTargetedApps {
     String pretargetingConfigName =
         String.format(
             "bidders/%s/pretargetingConfigs/%s",
-            parsedArgs.getInt("account_id"), parsedArgs.getInt("pretargeting_config_id"));
+            parsedArgs.getLong("account_id"), parsedArgs.getLong("pretargeting_config_id"));
 
     AddTargetedAppsRequest body = new AddTargetedAppsRequest();
     body.setTargetingMode(parsedArgs.getString("mobile_app_targeting_mode"));
@@ -75,12 +75,12 @@ public class AddTargetedApps {
             "The resource ID of the bidders resource under which the pretargeting "
                 + "configuration was created.")
         .required(true)
-        .type(Integer.class);
+        .type(Long.class);
     parser
         .addArgument("-p", "--pretargeting_config_id")
         .help("The resource ID of the pretargeting configuration that is being acted upon.")
         .required(true)
-        .type(Integer.class);
+        .type(Long.class);
     parser
         .addArgument("--mobile_app_targeting_mode")
         .help(

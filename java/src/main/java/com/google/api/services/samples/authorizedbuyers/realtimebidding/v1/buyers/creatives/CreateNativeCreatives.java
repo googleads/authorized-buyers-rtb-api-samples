@@ -34,7 +34,7 @@ import net.sourceforge.argparse4j.inf.Namespace;
 public class CreateNativeCreatives {
 
   public static void execute(RealTimeBidding client, Namespace parsedArgs) throws IOException {
-    Integer accountId = parsedArgs.getInt("account_id");
+    Long accountId = parsedArgs.getLong("account_id");
 
     String parentBuyerName = String.format("buyers/%s", accountId);
 
@@ -84,7 +84,7 @@ public class CreateNativeCreatives {
         .addArgument("-a", "--account_id")
         .help("The resource ID of the buyers resource under which the creative is to be created. ")
         .required(true)
-        .type(Integer.class);
+        .type(Long.class);
     parser
         .addArgument("--advertiser_name")
         .help("The name of the company being advertised in the creative.")

@@ -34,7 +34,7 @@ import net.sourceforge.argparse4j.inf.Namespace;
 public class ListPretargetingConfigs {
 
   public static void execute(RealTimeBidding client, Namespace parsedArgs) throws IOException {
-    Integer accountId = parsedArgs.getInt("account_id");
+    Long accountId = parsedArgs.getLong("account_id");
     Integer pageSize = parsedArgs.getInt("page_size");
     String parentBidderName = String.format("bidders/%s", accountId);
     String pageToken = null;
@@ -79,7 +79,7 @@ public class ListPretargetingConfigs {
                 + " were created. This will be used to construct the parent used as a path"
                 + " parameter for the pretargetingConfigs.list request.")
         .required(true)
-        .type(Integer.class);
+        .type(Long.class);
     parser
         .addArgument("-p", "--page_size")
         .help(
