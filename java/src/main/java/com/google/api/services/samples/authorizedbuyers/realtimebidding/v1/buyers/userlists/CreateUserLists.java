@@ -40,7 +40,7 @@ public class CreateUserLists {
 
   public static void execute(RealTimeBidding client, Namespace parsedArgs)
       throws IllegalArgumentException, IOException {
-    Integer accountId = parsedArgs.getInt("account_id");
+    Long accountId = parsedArgs.getLong("account_id");
     DateTimeFormatter formatter = Utils.getDateTimeFormatterForLocalDate();
     String startDateStr = parsedArgs.getString("start_date");
     String endDateStr = parsedArgs.getString("end_date");
@@ -84,7 +84,7 @@ public class CreateUserLists {
         .addArgument("-a", "--account_id")
         .help("The resource ID of the buyers resource under which the user list is to be created. ")
         .required(true)
-        .type(Integer.class);
+        .type(Long.class);
     parser
         .addArgument("-n", "--display_name")
         .help("The user-specified display name of the user list.")

@@ -39,7 +39,7 @@ public class RemoveTargetedPublishers {
     String pretargetingConfigName =
         String.format(
             "bidders/%s/pretargetingConfigs/%s",
-            parsedArgs.getInt("account_id"), parsedArgs.getInt("pretargeting_config_id"));
+            parsedArgs.getLong("account_id"), parsedArgs.getLong("pretargeting_config_id"));
 
     RemoveTargetedPublishersRequest body = new RemoveTargetedPublishersRequest();
     body.setPublisherIds(parsedArgs.<String>getList("publisher_ids"));
@@ -73,12 +73,12 @@ public class RemoveTargetedPublishers {
             "The resource ID of the bidders resource under which the pretargeting "
                 + "configuration was created.")
         .required(true)
-        .type(Integer.class);
+        .type(Long.class);
     parser
         .addArgument("-p", "--pretargeting_config_id")
         .help("The resource ID of the pretargeting configuration that is being acted upon.")
         .required(true)
-        .type(Integer.class);
+        .type(Long.class);
     parser
         .addArgument("--publisher_ids")
         .help(

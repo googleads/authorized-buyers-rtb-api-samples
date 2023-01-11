@@ -30,10 +30,10 @@ import net.sourceforge.argparse4j.inf.Namespace;
 public class PatchEndpoints {
 
   public static void execute(RealTimeBidding client, Namespace parsedArgs) throws IOException {
-    Integer accountId = parsedArgs.getInt("account_id");
+    Long accountId = parsedArgs.getLong("account_id");
 
     String name =
-        String.format("bidders/%s/endpoints/%s", accountId, parsedArgs.getInt("endpoint_id"));
+        String.format("bidders/%s/endpoints/%s", accountId, parsedArgs.getLong("endpoint_id"));
     String updateMask = "maximumQps,tradingLocation,bidProtocol";
 
     Endpoint body = new Endpoint();
@@ -58,12 +58,12 @@ public class PatchEndpoints {
         .addArgument("-a", "--account_id")
         .help("The resource ID of the bidders resource under which the endpoint exists.")
         .required(true)
-        .type(Integer.class);
+        .type(Long.class);
     parser
         .addArgument("-e", "--endpoint_id")
         .help("The resource ID of the endpoint to be patched.")
         .required(true)
-        .type(Integer.class);
+        .type(Long.class);
     parser
         .addArgument("-b", "--bid_protocol")
         .help("The real-time bidding protocol that the endpoint is using.")

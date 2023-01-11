@@ -35,7 +35,7 @@ import net.sourceforge.argparse4j.inf.Namespace;
 public class GetPublisherConnections {
 
   public static void execute(RealTimeBidding client, Namespace parsedArgs) throws IOException {
-    Integer accountId = parsedArgs.getInt("account_id");
+    Long accountId = parsedArgs.getLong("account_id");
     String publisherConnectionId = parsedArgs.getString("publisher_connection_id");
     String name =
         String.format("bidders/%d/publisherConnections/%s", accountId, publisherConnectionId);
@@ -61,7 +61,7 @@ public class GetPublisherConnections {
                 + "This will be used to construct the name used as a path parameter for the "
                 + "publisherConnections.get request.")
         .required(true)
-        .type(Integer.class);
+        .type(Long.class);
     parser
         .addArgument("-p", "--publisher_connection_id")
         .help(

@@ -34,12 +34,12 @@ import net.sourceforge.argparse4j.inf.Namespace;
 public class PatchPretargetingConfigs {
 
   public static void execute(RealTimeBidding client, Namespace parsedArgs) throws IOException {
-    Integer accountId = parsedArgs.getInt("account_id");
+    Long accountId = parsedArgs.getLong("account_id");
 
     String name =
         String.format(
             "bidders/%s/pretargetingConfigs/%s",
-            accountId, parsedArgs.getInt("pretargeting_config_id"));
+            accountId, parsedArgs.getLong("pretargeting_config_id"));
     String updateMask =
         "displayName,includedFormats,geoTargeting.includedIds," + "includedCreativeDimensions";
 
@@ -95,7 +95,7 @@ public class PatchPretargetingConfigs {
             "The resource ID of the bidders resource under which the pretargeting "
                 + "configuration was created.")
         .required(true)
-        .type(Integer.class);
+        .type(Long.class);
     parser
         .addArgument("-p", "--pretargeting_config_id")
         .help("The resource ID of the pretargeting configuration to be patched.")

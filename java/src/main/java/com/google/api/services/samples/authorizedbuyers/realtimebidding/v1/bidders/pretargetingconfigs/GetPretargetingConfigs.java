@@ -33,7 +33,7 @@ public class GetPretargetingConfigs {
     String name =
         String.format(
             "bidders/%s/pretargetingConfigs/%s",
-            parsedArgs.getInt("account_id"), parsedArgs.getInt("pretargeting_config_id"));
+            parsedArgs.getLong("account_id"), parsedArgs.getLong("pretargeting_config_id"));
 
     System.out.printf("Retrieving pretargeting configuration with name: %s\n", name);
 
@@ -55,12 +55,12 @@ public class GetPretargetingConfigs {
             "The resource ID of the bidders resource under which the pretargeting "
                 + "configuration was created.")
         .required(true)
-        .type(Integer.class);
+        .type(Long.class);
     parser
         .addArgument("-p", "--pretargeting_config_id")
         .help("The resource ID of the pretargeting configuration that is being retrieved.")
         .required(true)
-        .type(Integer.class);
+        .type(Long.class);
 
     Namespace parsedArgs = null;
     try {

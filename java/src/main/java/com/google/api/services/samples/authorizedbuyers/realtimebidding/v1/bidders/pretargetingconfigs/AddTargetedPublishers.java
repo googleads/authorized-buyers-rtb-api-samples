@@ -40,7 +40,7 @@ public class AddTargetedPublishers {
     String pretargetingConfigName =
         String.format(
             "bidders/%s/pretargetingConfigs/%s",
-            parsedArgs.getInt("account_id"), parsedArgs.getInt("pretargeting_config_id"));
+            parsedArgs.getLong("account_id"), parsedArgs.getLong("pretargeting_config_id"));
 
     AddTargetedPublishersRequest body = new AddTargetedPublishersRequest();
     body.setTargetingMode(parsedArgs.getString("publisher_targeting_mode"));
@@ -74,12 +74,12 @@ public class AddTargetedPublishers {
             "The resource ID of the bidders resource under which the pretargeting "
                 + "configuration was created.")
         .required(true)
-        .type(Integer.class);
+        .type(Long.class);
     parser
         .addArgument("-p", "--pretargeting_config_id")
         .help("The resource ID of the pretargeting configuration that is being acted upon.")
         .required(true)
-        .type(Integer.class);
+        .type(Long.class);
     parser
         .addArgument("--publisher_targeting_mode")
         .help(

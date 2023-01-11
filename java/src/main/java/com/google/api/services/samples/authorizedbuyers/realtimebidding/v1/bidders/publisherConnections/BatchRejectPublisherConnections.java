@@ -39,7 +39,7 @@ import net.sourceforge.argparse4j.inf.Namespace;
 public class BatchRejectPublisherConnections {
 
   public static void execute(RealTimeBidding client, Namespace parsedArgs) throws IOException {
-    Integer bidderAccountId = parsedArgs.getInt("account_id");
+    Long bidderAccountId = parsedArgs.getLong("account_id");
     String parent = String.format("bidders/%d", bidderAccountId);
 
     String publisherConnectionNameTemplate = "bidders/%d/publisherConnections/%s";
@@ -78,7 +78,7 @@ public class BatchRejectPublisherConnections {
             "The resource ID of the bidders resource for which the publisher connections are "
                 + "being rejected.")
         .required(true)
-        .type(Integer.class);
+        .type(Long.class);
     parser
         .addArgument("-p", "--publisher_connection_ids")
         .help(

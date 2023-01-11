@@ -32,7 +32,7 @@ import net.sourceforge.argparse4j.inf.Namespace;
 public class ListEndpoints {
 
   public static void execute(RealTimeBidding client, Namespace parsedArgs) throws IOException {
-    Integer accountId = parsedArgs.getInt("account_id");
+    Long accountId = parsedArgs.getLong("account_id");
     String parent = String.format("bidders/%s", accountId);
     Integer pageSize = parsedArgs.getInt("page_size");
     String pageToken = null;
@@ -77,7 +77,7 @@ public class ListEndpoints {
                 + " used to construct the name used as a path parameter for the endpoints.list "
                 + "request.")
         .required(true)
-        .type(Integer.class);
+        .type(Long.class);
     parser
         .addArgument("-p", "--page_size")
         .help(
