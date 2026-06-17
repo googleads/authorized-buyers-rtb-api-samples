@@ -19,51 +19,53 @@ package com.google.api.services.samples.authorizedbuyers.realtimebidding.v1.bidd
 import com.google.api.services.realtimebidding.v1.RealTimeBidding;
 import com.google.api.services.realtimebidding.v1.model.Endpoint;
 import com.google.api.services.samples.authorizedbuyers.realtimebidding.Utils;
-import java.io.IOException;
-import java.security.GeneralSecurityException;
 import net.sourceforge.argparse4j.ArgumentParsers;
 import net.sourceforge.argparse4j.inf.ArgumentParser;
 import net.sourceforge.argparse4j.inf.ArgumentParserException;
 import net.sourceforge.argparse4j.inf.Namespace;
+
+import java.io.IOException;
+import java.security.GeneralSecurityException;
 
 /**
  * This sample illustrates how to get a single endpoint for the specified bidder and endpoint IDs.
  */
 public class GetEndpoints {
 
-  public static void execute(RealTimeBidding client, Namespace parsedArgs) throws IOException {
-    Long accountId = parsedArgs.getLong("account_id");
-    Long endpointId = parsedArgs.getLong("endpoint_id");
+  public static void execute(RealTimeBidding client, Namespace parsedArgs) {
+    Integer accountId = parsedArgs.getInt("account_id");
+    Integer endpointId = parsedArgs.getInt("endpoint_id");
     String name = String.format("bidders/%s/endpoints/%s", accountId, endpointId);
 
-    Endpoint endpoint = client.bidders().endpoints().get(name).execute();
+    Endpoint endpoint = null;
 
-    System.out.printf(
-        "Get endpoint with ID '%s' for bidder account with ID '%s'.\n", endpointId, accountId);
+    try {
+      endpoint = client.bidders().endpoints().get(name).execute();
+    } catch(IOException ex) {
+      System.out.printf("RealTimeBidding API returned error response:\n%s", ex);
+      System.exit(1);
+    }
+
+    System.out.printf("Get endpoint with ID '%s' for bidder account with ID '%s'.\n",
+        endpointId, accountId);
     Utils.printEndpoint(endpoint);
   }
 
   public static void main(String[] args) {
-    ArgumentParser parser =
-        ArgumentParsers.newFor("GetBidders")
-            .build()
-            .defaultHelp(true)
-            .description(("Get an endpoint for the given bidder and endpoint IDs."));
-    parser
-        .addArgument("-a", "--account_id")
-        .help(
-            "The resource ID of the bidders resource under which the endpoint exists. This will be"
-                + " used to construct the name used as a path parameter for the endpoints.get "
-                + "request.")
+    ArgumentParser parser = ArgumentParsers.newFor("GetBidders").build()
+        .defaultHelp(true)
+        .description(("Get an endpoint for the given bidder and endpoint IDs."));
+    parser.addArgument("-a", "--account_id")
+        .help("The resource ID of the bidders resource under which the endpoint exists. This " +
+            "will be used to construct the name used as a path parameter for the endpoints.get " +
+            "request.")
         .required(true)
-        .type(Long.class);
-    parser
-        .addArgument("-e", "--endpoint_id")
-        .help(
-            "The resource ID of the endpoints resource that is being retrieved. This will be used"
-                + " to construct the name used as a path parameter for the endpoints.get request.")
+        .type(Integer.class);
+    parser.addArgument("-e", "--endpoint_id")
+        .help("The resource ID of the endpoints resource that is being retrieved. This will be " +
+            "used to construct the name used as a path parameter for the endpoints.get request.")
         .required(true)
-        .type(Long.class);
+        .type(Integer.class);
 
     Namespace parsedArgs = null;
     try {
@@ -85,11 +87,6 @@ public class GetEndpoints {
       System.exit(1);
     }
 
-    try {
-      execute(client, parsedArgs);
-    } catch (IOException ex) {
-      System.out.printf("RealTimeBidding API returned error response:\n%s", ex);
-      System.exit(1);
-    }
+    execute(client, parsedArgs);
   }
 }
