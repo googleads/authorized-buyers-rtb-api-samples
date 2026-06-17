@@ -20,18 +20,21 @@ import com.google.api.services.realtimebidding.v1.RealTimeBidding;
 import com.google.api.services.realtimebidding.v1.model.Bidder;
 import com.google.api.services.realtimebidding.v1.model.ListBiddersResponse;
 import com.google.api.services.samples.authorizedbuyers.realtimebidding.Utils;
-import java.io.IOException;
-import java.security.GeneralSecurityException;
-import java.util.List;
 import net.sourceforge.argparse4j.ArgumentParsers;
 import net.sourceforge.argparse4j.inf.ArgumentParser;
 import net.sourceforge.argparse4j.inf.ArgumentParserException;
 import net.sourceforge.argparse4j.inf.Namespace;
 
-/** This sample illustrates how to list bidders associated with the authorized service account. */
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.List;
+
+/**
+ * This sample illustrates how to list bidders associated with the authorized service account.
+ */
 public class ListBidders {
 
-  public static void execute(RealTimeBidding client, Namespace parsedArgs) throws IOException {
+  public static void execute(RealTimeBidding client, Namespace parsedArgs) {
     Integer pageSize = parsedArgs.getInt("page_size");
     String pageToken = null;
 
@@ -40,16 +43,22 @@ public class ListBidders {
     do {
       List<Bidder> bidders = null;
 
-      ListBiddersResponse response =
-          client.bidders().list().setPageSize(pageSize).setPageToken(pageToken).execute();
+      try {
+        ListBiddersResponse response = client.bidders().list()
+            .setPageSize(pageSize)
+            .setPageToken(pageToken)
+            .execute();
 
-      bidders = response.getBidders();
-      pageToken = response.getNextPageToken();
-
+        bidders = response.getBidders();
+        pageToken = response.getNextPageToken();
+      } catch(IOException ex) {
+        System.out.printf("RealTimeBidding API returned error response:\n%s", ex);
+        System.exit(1);
+      }
       if (bidders == null) {
         System.out.println("No bidders found.");
       } else {
-        for (Bidder bidder : bidders) {
+        for(Bidder bidder: bidders) {
           Utils.printBidder(bidder);
         }
       }
@@ -57,18 +66,13 @@ public class ListBidders {
   }
 
   public static void main(String[] args) {
-    ArgumentParser parser =
-        ArgumentParsers.newFor("ListBidders")
-            .build()
-            .defaultHelp(true)
-            .description(
-                "Lists bidders associated with the service account specified for the "
-                    + "OAuth 2.0 flow in Utils.java");
-    parser
-        .addArgument("-p", "--page_size")
-        .help(
-            "The number of rows to return per page. The server may return fewer rows than "
-                + "specified.")
+    ArgumentParser parser = ArgumentParsers.newFor("ListBidders").build()
+        .defaultHelp(true)
+        .description("Lists bidders associated with the service account specified for the " +
+            "OAuth 2.0 flow in Utils.java");
+    parser.addArgument("-p", "--page_size")
+        .help("The number of rows to return per page. The server may return fewer rows than " +
+            "specified.")
         .setDefault(Utils.getMaximumPageSize())
         .type(Integer.class);
 
@@ -92,11 +96,6 @@ public class ListBidders {
       System.exit(1);
     }
 
-    try {
-      execute(client, parsedArgs);
-    } catch (IOException ex) {
-      System.out.printf("RealTimeBidding API returned error response:\n%s", ex);
-      System.exit(1);
-    }
+    execute(client, parsedArgs);
   }
 }

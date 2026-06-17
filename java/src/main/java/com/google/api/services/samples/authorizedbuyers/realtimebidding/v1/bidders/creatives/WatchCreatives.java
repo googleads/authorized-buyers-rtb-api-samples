@@ -30,40 +30,42 @@ import net.sourceforge.argparse4j.inf.Namespace;
 /**
  * Enables monitoring of changes of a creative status for a given bidder.
  *
- * <p>Watched creatives will have changes to their status posted to Google Cloud Pub/Sub. For more
+ * Watched creatives will have changes to their status posted to Google Cloud Pub/Sub. For more
  * details on Google Cloud Pub/Sub, see: https://cloud.google.com/pubsub/docs
  *
- * <p>For an example of pulling creative status changes from a Google Cloud Pub/Sub subscription,
- * see PullWatchedCreativesSubscription.java.
+ * For an example of pulling creative status changes from a Google Cloud Pub/Sub subscription, see
+ * PullWatchedCreativesSubscription.java.
  */
 public class WatchCreatives {
 
-  public static void execute(RealTimeBidding client, Namespace parsedArgs) throws IOException {
-    Long accountId = parsedArgs.getLong("account_id");
+  public static void execute(RealTimeBidding client, Namespace parsedArgs) {
+    Integer accountId = parsedArgs.getInt("account_id");
     String parentBidderName = String.format("bidders/%s", accountId);
 
-    WatchCreativesResponse response =
-        client.bidders().creatives().watch(parentBidderName, new WatchCreativesRequest()).execute();
+    WatchCreativesResponse response = null;
+    try {
+      response = client.bidders().creatives().watch(parentBidderName, new WatchCreativesRequest())
+          .execute();
+    } catch(IOException ex) {
+      System.out.printf("RealTimeBidding API returned error response:\n%s", ex);
+      System.exit(1);
+    }
 
-    System.out.printf("Watching creative status changes for bidder account '%s'.':\n", accountId);
+    System.out.printf("Watching creative status changes for bidder account '%s'.':\n",
+        accountId);
     System.out.printf("- Topic: %s\n", response.getTopic());
     System.out.printf("- Subscription: %s\n", response.getSubscription());
   }
 
   public static void main(String[] args) {
-    ArgumentParser parser =
-        ArgumentParsers.newFor("WatchCreatives")
-            .build()
-            .defaultHelp(true)
-            .description(
-                ("Enables watching creative status changes for the given bidder account."));
-    parser
-        .addArgument("-a", "--account_id")
-        .help(
-            "The resource ID of a bidder account. This will be used to construct the parent "
-                + "used as a path parameter for the creatives.watch request.")
+    ArgumentParser parser = ArgumentParsers.newFor("WatchCreatives").build()
+        .defaultHelp(true)
+        .description(("Enables watching creative status changes for the given bidder account."));
+    parser.addArgument("-a", "--account_id")
+        .help("The resource ID of a bidder account. This will be used to construct the parent " +
+            "used as a path parameter for the creatives.watch request.")
         .required(true)
-        .type(Long.class);
+        .type(Integer.class);
 
     Namespace parsedArgs = null;
     try {
@@ -85,11 +87,6 @@ public class WatchCreatives {
       System.exit(1);
     }
 
-    try {
-      execute(client, parsedArgs);
-    } catch (IOException ex) {
-      System.out.printf("RealTimeBidding API returned error response:\n%s", ex);
-      System.exit(1);
-    }
+    execute(client, parsedArgs);
   }
 }

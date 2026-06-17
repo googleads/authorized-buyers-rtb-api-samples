@@ -29,19 +29,21 @@ import net.sourceforge.argparse4j.inf.ArgumentParser;
 import net.sourceforge.argparse4j.inf.ArgumentParserException;
 import net.sourceforge.argparse4j.inf.Namespace;
 
-/** Patches a creative with the specified name. */
+/**
+ * Patches a creative with the specified name.
+ */
 public class PatchCreatives {
 
-  public static void execute(RealTimeBidding client, Namespace parsedArgs) throws IOException {
-    Long accountId = parsedArgs.getLong("account_id");
+  public static void execute(RealTimeBidding client, Namespace parsedArgs) {
+    Integer accountId = parsedArgs.getInt("account_id");
     String creativeId = parsedArgs.getString("creative_id");
     String name = String.format("buyers/%s/creatives/%s", accountId, creativeId);
 
-    List<String> declaredClickThroughUrls =
-        Arrays.asList(
-            String.format("https://test.clickurl.com/%s", UUID.randomUUID()),
-            String.format("https://test.clickurl.com/%s", UUID.randomUUID()),
-            String.format("https://test.clickurl.com/%s", UUID.randomUUID()));
+    List<String> declaredClickThroughUrls = Arrays.asList(
+        String.format("https://test.clickurl.com/%s", UUID.randomUUID()),
+        String.format("https://test.clickurl.com/%s", UUID.randomUUID()),
+        String.format("https://test.clickurl.com/%s", UUID.randomUUID())
+        );
 
     Creative update = new Creative();
     update.setAdvertiserName(String.format("Test-Advertiser-%s", UUID.randomUUID()));
@@ -49,32 +51,31 @@ public class PatchCreatives {
 
     String uMask = "advertiserName,declaredClickThroughUrls";
 
-    Creative creative =
-        client.buyers().creatives().patch(name, update).setUpdateMask(uMask).execute();
+    Creative creative = null;
+    try {
+      creative = client.buyers().creatives().patch(name, update).setUpdateMask(uMask).execute();
+    } catch(IOException ex) {
+    System.out.printf("RealTimeBidding API returned error response:\n%s", ex);
+    System.exit(1);
+  }
 
     System.out.printf("Patched creative for buyer Account ID '%s':\n", accountId);
     Utils.printCreative(creative);
   }
 
   public static void main(String[] args) {
-    ArgumentParser parser =
-        ArgumentParsers.newFor("PatchCreatives")
-            .build()
-            .defaultHelp(true)
-            .description(
-                ("Patches the specified creative's advertiserName and "
-                    + "declaredClickThroughUrls."));
-    parser
-        .addArgument("-a", "--account_id")
+    ArgumentParser parser = ArgumentParsers.newFor("PatchCreatives").build()
+        .defaultHelp(true)
+        .description(("Patches the specified creative's advertiserName and " +
+            "declaredClickThroughUrls."));
+    parser.addArgument("-a", "--account_id")
         .help("The resource ID of the buyers resource under which the creative is to be created.")
         .required(true)
-        .type(Long.class);
-    parser
-        .addArgument("-c", "--creative_id")
-        .help(
-            "The resource ID of the buyers.creatives resource for which the creative was created."
-                + " This will be used to construct the name used as a path parameter for the"
-                + " creatives.patch request.")
+        .type(Integer.class);
+    parser.addArgument("-c", "--creative_id")
+        .help("The resource ID of the buyers.creatives resource for which the creative was " +
+            "created. This will be used to construct the name used as a path parameter for the " +
+            "creatives.patch request.")
         .required(true);
 
     Namespace parsedArgs = null;
@@ -97,11 +98,6 @@ public class PatchCreatives {
       System.exit(1);
     }
 
-    try {
-      execute(client, parsedArgs);
-    } catch (IOException ex) {
-      System.out.printf("RealTimeBidding API returned error response:\n%s", ex);
-      System.exit(1);
-    }
+    execute(client, parsedArgs);
   }
 }

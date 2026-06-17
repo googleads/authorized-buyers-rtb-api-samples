@@ -19,44 +19,47 @@ package com.google.api.services.samples.authorizedbuyers.realtimebidding.v1.bidd
 import com.google.api.services.realtimebidding.v1.RealTimeBidding;
 import com.google.api.services.realtimebidding.v1.model.Bidder;
 import com.google.api.services.samples.authorizedbuyers.realtimebidding.Utils;
-import java.io.IOException;
-import java.security.GeneralSecurityException;
 import net.sourceforge.argparse4j.ArgumentParsers;
 import net.sourceforge.argparse4j.inf.ArgumentParser;
 import net.sourceforge.argparse4j.inf.ArgumentParserException;
 import net.sourceforge.argparse4j.inf.Namespace;
 
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+
 /**
  * This sample illustrates how to get a single bidder for the specified bidder name.
  *
- * <p>The bidder specified must be associated with the authorized service account specified in
- * Utils.java.
+ * The bidder specified must be associated with the authorized service account specified in Utils.java.
  */
 public class GetBidders {
 
-  public static void execute(RealTimeBidding client, Namespace parsedArgs) throws IOException {
-    Long accountId = parsedArgs.getLong("account_id");
+  public static void execute(RealTimeBidding client, Namespace parsedArgs) {
+    Integer accountId = parsedArgs.getInt("account_id");
     String name = String.format("bidders/%s", accountId);
 
-    Bidder bidder = client.bidders().get(name).execute();
+    Bidder bidder = null;
+
+    try {
+      bidder = client.bidders().get(name).execute();
+    } catch(IOException ex) {
+      System.out.printf("RealTimeBidding API returned error response:\n%s", ex);
+      System.exit(1);
+    }
 
     System.out.printf("Get bidder with ID '%s'.\n", accountId);
     Utils.printBidder(bidder);
   }
 
   public static void main(String[] args) {
-    ArgumentParser parser =
-        ArgumentParsers.newFor("GetBidders")
-            .build()
-            .defaultHelp(true)
-            .description(("Get a bidder for the given account ID."));
-    parser
-        .addArgument("-a", "--account_id")
-        .help(
-            "The resource ID of the bidders resource that is being retrieved. This will be used to"
-                + " construct the name used as a path parameter for the bidders.get request.")
+    ArgumentParser parser = ArgumentParsers.newFor("GetBidders").build()
+        .defaultHelp(true)
+        .description(("Get a bidder for the given account ID."));
+    parser.addArgument("-a", "--account_id")
+        .help("The resource ID of the bidders resource that is being retrieved. This will be " +
+            "used to construct the name used as a path parameter for the bidders.get request.")
         .required(true)
-        .type(Long.class);
+        .type(Integer.class);
 
     Namespace parsedArgs = null;
     try {
@@ -78,11 +81,6 @@ public class GetBidders {
       System.exit(1);
     }
 
-    try {
-      execute(client, parsedArgs);
-    } catch (IOException ex) {
-      System.out.printf("RealTimeBidding API returned error response:\n%s", ex);
-      System.exit(1);
-    }
+    execute(client, parsedArgs);
   }
 }

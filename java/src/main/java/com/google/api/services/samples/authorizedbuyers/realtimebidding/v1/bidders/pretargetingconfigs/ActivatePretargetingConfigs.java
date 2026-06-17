@@ -27,45 +27,41 @@ import net.sourceforge.argparse4j.inf.ArgumentParser;
 import net.sourceforge.argparse4j.inf.ArgumentParserException;
 import net.sourceforge.argparse4j.inf.Namespace;
 
-/** Activates a specified pretargeting configuration. */
+/**
+ * Activates a specified pretargeting configuration.
+ */
 public class ActivatePretargetingConfigs {
 
-  public static void execute(RealTimeBidding client, Namespace parsedArgs) throws IOException {
-    String name =
-        String.format(
-            "bidders/%s/pretargetingConfigs/%s",
-            parsedArgs.getLong("account_id"), parsedArgs.getLong("pretargeting_config_id"));
+  public static void execute(RealTimeBidding client, Namespace parsedArgs) {
+    String name = String.format("bidders/%s/pretargetingConfigs/%s",
+        parsedArgs.getInt("account_id"), parsedArgs.getInt("pretargeting_config_id"));
 
     System.out.printf("Activating pretargeting configuration with name: %s\n", name);
 
-    PretargetingConfig pretargetingConfig =
-        client
-            .bidders()
-            .pretargetingConfigs()
-            .activate(name, new ActivatePretargetingConfigRequest())
-            .execute();
-
+    PretargetingConfig pretargetingConfig = null;
+    try {
+      pretargetingConfig = client.bidders().pretargetingConfigs().activate(
+          name, new ActivatePretargetingConfigRequest()).execute();
+    } catch(IOException ex) {
+      System.out.printf("RealTimeBidding API returned error response:\n%s", ex);
+      System.exit(1);
+  }
     Utils.printPretargetingConfig(pretargetingConfig);
   }
 
   public static void main(String[] args) {
-    ArgumentParser parser =
-        ArgumentParsers.newFor("ActivatePretargetingConfigs")
-            .build()
-            .defaultHelp(true)
-            .description(("Activates a specified pretargeting configuration."));
-    parser
-        .addArgument("-a", "--account_id")
-        .help(
-            "The resource ID of the bidders resource under which the pretargeting "
-                + "configuration was created.")
+    ArgumentParser parser = ArgumentParsers.newFor("ActivatePretargetingConfigs").build()
+        .defaultHelp(true)
+        .description(("Activates a specified pretargeting configuration."));
+    parser.addArgument("-a", "--account_id")
+        .help("The resource ID of the bidders resource under which the pretargeting " +
+            "configuration was created.")
         .required(true)
-        .type(Long.class);
-    parser
-        .addArgument("-p", "--pretargeting_config_id")
+        .type(Integer.class);
+    parser.addArgument("-p", "--pretargeting_config_id")
         .help("The resource ID of the pretargeting configuration that is being activated.")
         .required(true)
-        .type(Long.class);
+        .type(Integer.class);
 
     Namespace parsedArgs = null;
     try {
@@ -87,11 +83,6 @@ public class ActivatePretargetingConfigs {
       System.exit(1);
     }
 
-    try {
-      execute(client, parsedArgs);
-    } catch (IOException ex) {
-      System.out.printf("RealTimeBidding API returned error response:\n%s", ex);
-      System.exit(1);
-    }
+    execute(client, parsedArgs);
   }
 }
