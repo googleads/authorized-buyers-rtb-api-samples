@@ -73,8 +73,8 @@ public class AddDeals {
     parser
         .addArgument("-d", "--deal_ids")
         .help(
-            "The deal IDs of the deals, auction packages, or marketplace packages to add to the"
-                + " creative. Specified as a space-separated list of deal IDs.")
+            "The deal IDs of the deals or marketplace packages to add to the creative."
+                + " Specified as a space-separated list of deal IDs.")
         .nargs("*")
         .required(true);
 
